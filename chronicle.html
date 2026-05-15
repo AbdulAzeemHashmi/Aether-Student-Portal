@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AETHER | Chronicle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #6366f1;
+      --accent: #a855f7;
+      --sage: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --bg: #030303;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-sec: #94a3b8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* BACKGROUND */
+    .bg-mesh {
+      position: fixed; inset: 0;
+      background: radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.2), transparent 70%),
+                  radial-gradient(circle at 0% 100%, rgba(168, 85, 247, 0.15), transparent 50%);
+      z-index: -1;
+    }
+    #bg-canvas { position: fixed; inset: 0; pointer-events: none; z-index: -1; opacity: 0.4; }
+
+    header {
+      padding: 40px; display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 100; backdrop-filter: blur(20px);
+    }
+    .logo { font-family: 'Outfit'; font-size: 24px; font-weight: 800; letter-spacing: -1px; text-decoration: none; color: #fff; display: flex; align-items: center; gap: 12px; }
+    .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 8px; }
+    .nav-back { color: var(--text-sec); text-decoration: none; font-size: 13px; font-weight: 600; transition: color 0.2s; }
+    .nav-back:hover { color: #fff; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 60px 20px; position: relative; }
+    
+    .page-title {
+      font-family: 'Outfit'; font-size: 56px; font-weight: 800; margin-bottom: 16px;
+      background: linear-gradient(to right, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: slide-up-fade 1s ease-out;
+    }
+    .page-sub { color: var(--text-sec); font-size: 16px; margin-bottom: 80px; max-width: 600px; animation: slide-up-fade 1.2s ease-out; }
+
+    @keyframes slide-up-fade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* TIMELINE STRUCTURE (THE WEAVE) */
+    .timeline { position: relative; padding: 0; perspective: 1500px; display: flex; flex-direction: column; align-items: center; }
+    .timeline::before {
+      content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; transform: translateX(-50%);
+      background: linear-gradient(to bottom, transparent, var(--primary), var(--accent), transparent);
+      box-shadow: 0 0 30px var(--primary);
+      opacity: 0.3;
+    }
+
+    .semester-node {
+      position: relative; width: 100%; display: flex; margin-bottom: 150px;
+      opacity: 0; transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    /* Alternating Sides */
+    .semester-node:nth-child(odd) { justify-content: flex-start; padding-left: 10%; transform: translateX(-100px) rotateY(30deg); }
+    .semester-node:nth-child(even) { justify-content: flex-end; padding-right: 10%; transform: translateX(100px) rotateY(-30deg); }
+
+    .semester-node.visible { opacity: 1; transform: translateX(0) rotateY(0deg); }
+
+    .node-marker {
+      position: absolute; left: 50%; top: 40px; width: 24px; height: 24px;
+      transform: translateX(-50%);
+      background: var(--bg); border: 4px solid var(--primary); border-radius: 50%;
+      z-index: 10; box-shadow: 0 0 30px var(--primary);
+      transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .semester-node.visible .node-marker { transform: translateX(-50%) scale(1.4) rotate(720deg); }
+
+    .semester-card {
+      width: 42%;
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 36px;
+      padding: 40px; backdrop-filter: blur(40px);
+      transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1); 
+      position: relative; overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    }
+    .semester-card:hover { border-color: var(--primary); transform: translateY(-10px) scale(1.02); }
+    
+    .sem-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .sem-label { font-family: 'Space Grotesk'; font-size: 14px; color: var(--primary); letter-spacing: 5px; text-transform: uppercase; font-weight: 700; }
+    .sem-gpa { font-family: 'Outfit'; font-size: 48px; font-weight: 800; }
+    .sem-status { padding: 8px 18px; border-radius: 100px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+    .status-completed { background: rgba(16, 185, 129, 0.15); color: var(--sage); border: 1px solid rgba(16, 185, 129, 0.2); }
+    .status-future { background: rgba(255, 255, 255, 0.05); color: var(--text-sec); border: 1px solid var(--border); }
+
+    .course-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+    .course-mini {
+      font-size: 12px; padding: 14px; background: rgba(255,255,255,0.03);
+      border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); color: var(--text-sec);
+      transition: all 0.4s;
+    }
+
+    /* SIDEBAR (MOVED FOR WEAVE) */
+    .quantum-sidebar {
+      position: fixed; left: 40px; top: 180px; width: 280px;
+      display: flex; flex-direction: column; gap: 24px;
+      animation: slide-right-fade 1.5s ease-out;
+    }
+    @keyframes slide-right-fade { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes slide-left-fade { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes slide-left-fade { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+    .q-stat-card {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px;
+      padding: 24px; backdrop-filter: blur(10px);
+    }
+    .q-lbl { font-size: 10px; color: var(--text-sec); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+    .q-val { font-family: 'Outfit'; font-size: 24px; font-weight: 800; color: var(--primary); }
+    .q-desc { font-size: 11px; color: var(--text-sec); margin-top: 8px; line-height: 1.5; }
+
+    @media (max-width: 1200px) {
+      .quantum-sidebar { position: static; width: 100%; flex-direction: row; margin-top: 40px; }
+      .q-stat-card { flex: 1; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .container { padding: 40px 20px; }
+      .page-title { font-size: 40px; }
+      .page-sub { font-size: 14px; margin-bottom: 48px; }
+      .timeline::before { left: 24px; transform: none; }
+      .semester-node { flex-direction: column; align-items: flex-start !important;
+        padding-left: 60px !important; padding-right: 0 !important;
+        justify-content: flex-start !important; margin-bottom: 40px; }
+      .semester-node:nth-child(odd),
+      .semester-node:nth-child(even) { transform: none; }
+      .node-marker { left: 24px; top: 20px; transform: translateX(-50%); }
+      .semester-card { width: 100%; }
+      .quantum-sidebar { flex-direction: column; }
+    }
+    @media (max-width: 600px) {
+      header { padding: 16px 20px; }
+      .logo { font-size: 18px; }
+      .page-title { font-size: 30px; }
+      .semester-card { padding: 24px 20px; border-radius: 20px; }
+      .sem-gpa { font-size: 36px; }
+      .course-list { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+  <canvas id="bg-canvas"></canvas>
+
+  <header>
+    <a href="hub.html" class="logo">
+      <div class="logo-icon"></div>
+      <span>AETHER</span>
+    </a>
+    <a href="hub.html" class="nav-back">← Disconnect Chronicle</a>
+  </header>
+
+  <div class="container">
+    <h1 class="page-title">The Chronicle</h1>
+    <p class="page-sub">A temporal visualization of your academic odyssey. Track solidified achievements and forecast future quantum milestones.</p>
+
+    <div class="timeline" id="timeline-root">
+      <!-- Semesters will be injected here -->
+    </div>
+
+    <div class="quantum-sidebar">
+      <div class="q-stat-card">
+        <div class="q-lbl">Temporal Status</div>
+        <div class="q-val" id="q-progress">4/8 Semesters</div>
+        <div class="q-desc">Current position in the 4-year academic cycle.</div>
+      </div>
+      <div class="q-stat-card">
+        <div class="q-lbl">Projected Horizon</div>
+        <div class="q-val" id="q-horizon">Spring 2027</div>
+        <div class="q-desc">Estimated graduation window based on current trajectory.</div>
+      </div>
+      <div class="q-stat-card">
+        <div class="q-lbl">Momentum Score</div>
+        <div class="q-val" id="q-momentum">High</div>
+        <div class="q-desc">Consistency index calculated from semester-over-semester GPA deltas.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const profile = JSON.parse(localStorage.getItem('aether_profile') || 'null');
+      if (!profile) {
+        document.getElementById('timeline-root').innerHTML = '<p style="color:var(--text-sec)">No temporal data synchronized. Please update your profile in Animus.</p>';
+        return;
+      }
+
+      renderTimeline(profile);
+      observeNodes();
+      initParticles();
+      initParallax();
+    });
+
+    function initParticles() {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let w, h, particles = [];
+
+      const resize = () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; };
+      window.addEventListener('resize', resize); resize();
+
+      class P {
+        constructor() { this.reset(); }
+        reset() {
+          this.x = Math.random() * w; this.y = Math.random() * h;
+          this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5;
+          this.size = Math.random() * 2; this.alpha = Math.random();
+        }
+        draw() {
+          ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha * 0.3})`;
+          ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+        }
+        update() {
+          this.x += this.vx; this.y += this.vy;
+          if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) this.reset();
+        }
+      }
+
+      for (let i = 0; i < 100; i++) particles.push(new P());
+
+      function loop() {
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(loop);
+      }
+      loop();
+    }
+
+    function initParallax() {
+      document.addEventListener('mousemove', e => {
+        const cards = document.querySelectorAll('.semester-card');
+        cards.forEach(card => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          // Apply different tilt based on side
+          card.style.transform = `rotateY(${x * 12}deg) rotateX(${-y * 12}deg) translateZ(30px)`;
+        });
+      });
+    }
+
+    function renderTimeline(profile) {
+      const root = document.getElementById('timeline-root');
+      const sems = profile.semesters || [];
+      
+      sems.forEach((s, idx) => {
+        const node = createNode(s, idx + 1, false);
+        root.appendChild(node);
+      });
+
+      for (let i = sems.length + 1; i <= 8; i++) {
+        const node = createNode({ gpa: 0, courses: [] }, i, true);
+        root.appendChild(node);
+      }
+
+      document.getElementById('q-progress').textContent = `${sems.length}/8 Semesters`;
+      const currentYear = new Date().getFullYear();
+      const yearsLeft = Math.ceil((8 - sems.length) / 2);
+      document.getElementById('q-horizon').textContent = `Spring ${currentYear + yearsLeft}`;
+    }
+
+    function createNode(semData, num, isFuture) {
+      const div = document.createElement('div');
+      div.className = `semester-node ${isFuture ? 'future' : ''}`;
+      
+      div.innerHTML = `
+        <div class="node-marker"></div>
+        <div class="semester-card">
+          <div class="sem-head">
+            <div>
+              <div class="sem-label">Cycle ${num}</div>
+              <div class="sem-gpa">${isFuture ? '--' : semData.gpa.toFixed(2)}</div>
+            </div>
+            <span class="sem-status ${isFuture ? 'status-future' : 'status-completed'}">
+              ${isFuture ? 'Quantum Possibility' : 'Solidified Memory'}
+            </span>
+          </div>
+          <div class="course-list">
+            ${isFuture 
+              ? '<div class="course-mini">Undetermined Academic Load</div>'
+              : (semData.courses || []).map(c => `<div class="course-mini">${c}</div>`).join('')
+            }
+          </div>
+        </div>
+      `;
+      return div;
+    }
+
+    function observeNodes() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.2 });
+
+      document.querySelectorAll('.semester-node').forEach(n => observer.observe(n));
+
+      // Focal Tracking
+      window.addEventListener('scroll', () => {
+        let center = window.innerHeight / 2;
+        let closest = null;
+        let minOffset = Infinity;
+
+        document.querySelectorAll('.semester-node').forEach(node => {
+          let rect = node.getBoundingClientRect();
+          let nodeCenter = rect.top + rect.height / 2;
+          let offset = Math.abs(center - nodeCenter);
+          if (offset < minOffset) {
+            minOffset = offset;
+            closest = node;
+          }
+          node.classList.remove('in-focus');
+        });
+
+        if (closest) closest.classList.add('in-focus');
+      });
+    }
+  </script>
+</body>
+</html>
+</body>
+</html>
