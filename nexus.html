@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AETHER Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #050505;
+      --bg-surface: #0a0a0a;
+      --bg-raised: #111111;
+      --border: rgba(255, 255, 255, 0.05);
+      --border-light: rgba(255, 255, 255, 0.03);
+      --sage: #059669;
+      --sage-glow: rgba(5, 150, 105, 0.4);
+      --lavender: #8b5cf6;
+      --lavender-glow: rgba(139, 92, 246, 0.4);
+      --gold: #f59e0b;
+      --gold-glow: rgba(245, 158, 11, 0.4);
+      --red: #ef4444;
+      --red-glow: rgba(239, 68, 68, 0.4);
+      --text-primary: #f8fafc;
+      --text-sec: #94a3b8;
+      --text-muted: #475569;
+      --shadow-node: 0 10px 40px rgba(0, 0, 0, 0.7);
+      --shadow-card: 0 16px 40px rgba(0, 0, 0, 0.8);
+      --transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --header-h: 76px;
+      --node-w: 160px;
+      --node-h: 100px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #050505 !important;
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    /* BACKGROUND */
+    .background-ambient {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: #050505;
+    }
+    .orb {
+      position: absolute; border-radius: 50%; filter: blur(150px); opacity: 0.15;
+      animation: ambient-drift 18s ease-in-out infinite alternate; pointer-events: none;
+    }
+    .orb-1 { width: 55vw; height: 55vh; background: #4f46e5; top: -15%; left: -5%; }
+    .orb-2 { width: 45vw; height: 45vh; background: #7c3aed; bottom: -10%; right: -5%; animation-delay: -6s; }
+    @keyframes ambient-drift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(8vw, 4vh) scale(1.08); }
+    }
+    .bg-text {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-family: 'Outfit', sans-serif; font-size: 26vw; font-weight: 800;
+      color: rgba(255, 255, 255, 0.01); letter-spacing: 0;
+      pointer-events: none; white-space: nowrap;
+      text-transform: uppercase; line-height: 1;
+      z-index: 1; margin: 0; padding: 0;
+      text-align: center;
+    }
+
+    /* Starting Animations */
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInScale { from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+    .animate-slide-up { opacity: 0; animation: fadeSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-scale { opacity: 0; animation: fadeInScale 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+    /* Welcome Banner */
+    .welcome-banner {
+      position: fixed; top: calc(var(--header-h) + 16px); left: 50%; transform: translateX(-50%);
+      z-index: 999; pointer-events: none;
+      display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px;
+      opacity: 0; animation: fadeSlideUp 1s 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .welcome-banner h2 {
+      font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 800;
+      background: linear-gradient(135deg, #2c1810, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    .welcome-banner p {
+      font-size: 13px; color: var(--text-sec); max-width: 400px; line-height: 1.5;
+    }
+    .welcome-banner .fade-out {
+      animation: bannerFade 1s 4s ease forwards;
+    }
+    @keyframes bannerFade { to { opacity: 0; transform: translateX(-50%) translateY(-10px); } }
+
+    /* HEADER */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 32px;
+      background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(20px) saturate(1.5);
+      border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+    }
+    .header-logo { display: flex; align-items: center; gap: 12px; text-decoration: none }
+    .logo-mark {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, #6366f1, #3b82f6); border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; color: white;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
+    }
+    .logo-text { display: flex; flex-direction: column; line-height: 1 }
+    .logo-wordmark { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 1px; color: var(--text-primary); }
+    .logo-sub { font-size: 10px; color: var(--text-muted); font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px }
+
+    .header-center { display: flex; align-items: center; gap: 8px }
+    .sem-pill {
+      padding: 6px 14px; border-radius: 100px; font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+      cursor: pointer; border: 1px solid var(--border); color: var(--text-sec); background: rgba(255,255,255,0.02); transition: all 0.2s;
+    }
+    .sem-pill:hover { border-color: rgba(59,130,246,0.4); color: #60a5fa; background: rgba(59,130,246,0.1) }
+    .sem-pill.active-sem { background: rgba(59,130,246,0.1); border-color: #60a5fa; color: #60a5fa; box-shadow: 0 0 12px rgba(59,130,246,0.2); }
+    .sem-pill.done-sem { background: var(--status-done-bg); border-color: var(--sage-dim); color: var(--sage) }
+
+    .header-right { display: flex; align-items: center; gap: 20px }
+    .legend-row { display: flex; align-items: center; gap: 16px }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-sec); font-weight: 500; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
+    .legend-dot.done { background: var(--status-done); color: var(--status-done); }
+    .legend-dot.active { background: var(--status-active); color: var(--status-active); }
+    .legend-dot.locked { background: var(--text-muted); color: transparent; box-shadow: none; opacity: 0.5; }
+
+    .header-divider { width: 1px; height: 28px; background: var(--border) }
+
+    .user-trigger {
+      display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 6px 14px 6px 6px;
+      border-radius: 100px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); transition: all 0.2s;
+    }
+    .user-trigger:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); }
+    .user-avatar {
+      width: 34px; height: 34px; background: linear-gradient(135deg, #4f46e5, #0ea5e9); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; color: white; flex-shrink: 0; box-shadow: 0 0 10px rgba(79,70,229,0.3);
+    }
+    .user-meta { line-height: 1.2; text-align: right }
+    .user-name-hdr { font-size: 13px; font-weight: 600; color: var(--text-primary) }
+    .user-roll-hdr { font-size: 10.5px; color: var(--text-muted); font-family: 'Space Grotesk', monospace; letter-spacing: 0.5px }
+    .burger-icon { display: flex; flex-direction: column; gap: 4px; padding: 2px; margin-left: 4px; }
+    .burger-icon span { display: block; width: 16px; height: 1.5px; background: var(--text-sec); border-radius: 2px; transition: all 0.2s }
+    .user-trigger:hover .burger-icon span { background: var(--lavender) }
+
+    /* SIDE PANEL */
+    .side-panel {
+      position: fixed; top: 0; right: -400px; width: 360px; height: 100vh;
+      background: rgba(15, 12, 41, 0.85); backdrop-filter: blur(24px) saturate(1.5);
+      border-left: 1px solid var(--border); z-index: 2000;
+      transition: right 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      display: flex; flex-direction: column; box-shadow: -10px 0 40px rgba(0,0,0,0.5);
+    }
+    .side-panel.open { right: 0 }
+
+    .panel-top { padding: 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between }
+    .panel-top-title { font-size: 13px; font-weight: 600; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase }
+    .panel-close-btn { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--text-sec); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s }
+    .panel-close-btn:hover { border-color: rgba(167, 139, 250, 0.5); color: var(--lavender); background: rgba(167, 139, 250, 0.1); }
+
+    .panel-user-card { padding: 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 16px }
+    .panel-avatar { width: 56px; height: 56px; background: linear-gradient(135deg, #4f46e5, #0ea5e9); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: white; flex-shrink: 0; box-shadow: 0 8px 20px rgba(79,70,229,0.3); }
+    .panel-user-info { flex: 1 }
+    .panel-user-name { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; letter-spacing: -0.5px; }
+    .panel-user-roll { font-size: 12px; color: var(--text-muted); font-family: 'Space Grotesk', monospace }
+    .panel-badge { font-size: 10px; font-weight: 600; background: var(--status-active-bg); color: var(--lavender); border: 1px solid var(--lavender-dim); padding: 4px 12px; border-radius: 100px; margin-top: 8px; display: inline-block; letter-spacing: 0.5px }
+
+    .panel-body { flex: 1; padding: 24px; overflow-y: auto }
+    .panel-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px }
+    .stat-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 20px 16px; text-align: center; position: relative; overflow: hidden; }
+    .stat-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 50%); pointer-events: none; }
+    .stat-label { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px }
+    .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; line-height: 1; color: var(--sage); text-shadow: 0 0 16px rgba(52, 211, 153, 0.3); }
+    .stat-value.purple { color: var(--lavender); text-shadow: 0 0 16px rgba(167, 139, 250, 0.3); }
+
+    .panel-progress-section { margin-bottom: 28px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 20px 16px; }
+    .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px }
+    .progress-title { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase }
+    .progress-pct { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: var(--sage) }
+    .progress-track { height: 6px; background: rgba(255,255,255,0.05); border-radius: 100px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 100px; transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 10px rgba(52, 211, 153, 0.5); }
+    .progress-sub { font-size: 11px; color: var(--text-muted); margin-top: 10px; text-align: right; }
+
+    .panel-nav { display: flex; flex-direction: column; gap: 10px }
+    .panel-nav-btn {
+      display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.02); color: var(--text-sec);
+      font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: all 0.2s; text-align: left;
+    }
+    .panel-nav-btn:hover { border-color: rgba(167, 139, 250, 0.4); color: white; background: rgba(167, 139, 250, 0.1); transform: translateX(4px); box-shadow: 0 4px 12px rgba(167, 139, 250, 0.15); }
+    .panel-nav-btn .btn-icon { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.1); }
+
+    .panel-footer { padding: 20px 24px 28px; border-top: 1px solid var(--border) }
+    .logout-btn {
+      width: 100%; padding: 14px; border-radius: 12px; border: 1px solid rgba(248, 113, 113, 0.3); background: rgba(248, 113, 113, 0.05);
+      color: #fca5a5; font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+    }
+    .logout-btn:hover { background: rgba(248, 113, 113, 0.15); border-color: rgba(248, 113, 113, 0.6); color: #f87171; box-shadow: 0 4px 12px rgba(248, 113, 113, 0.15); transform: translateY(-1px); }
+
+    .overlay { position: fixed; inset: 0; background: rgba(15, 12, 41, 0.6); backdrop-filter: blur(8px); z-index: 1500; opacity: 0; pointer-events: none; transition: opacity var(--transition) }
+    .overlay.show { opacity: 1; pointer-events: all }
+
+    /* GRAPH */
+    .graph-viewport { position: relative; z-index: 1; width: 100vw; height: 100vh; padding-top: var(--header-h); overflow: auto; scroll-behavior: smooth; }
+    .graph-viewport::-webkit-scrollbar { width: 8px; height: 8px }
+    .graph-viewport::-webkit-scrollbar-track { background: transparent }
+    .graph-viewport::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px }
+    .graph-viewport::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+    #graph-content { position: relative; width: 3200px; height: 1100px; }
+
+    .sem-lane-label { position: absolute; top: 24px; display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; width: var(--node-w) }
+    .sem-lane-tag {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 6px 18px;
+      border-radius: 100px; border: 1px solid; background: rgba(15, 12, 41, 0.85); backdrop-filter: blur(12px); white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    }
+    .sem-lane-tag.done-tag { color: var(--sage); border-color: rgba(52, 211, 153, 0.4); box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 12px rgba(52, 211, 153, 0.15); }
+    .sem-lane-tag.active-tag { color: var(--lavender); border-color: rgba(167, 139, 250, 0.5); box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 16px rgba(167, 139, 250, 0.25); }
+    .sem-lane-tag.locked-tag { color: var(--text-muted); border-color: rgba(255,255,255,0.1); }
+
+    /* ZENITH GLASS NODES (Restored & Enhanced) */
+    .course-node {
+      width: 160px; height: 100px;
+      position: absolute; cursor: pointer;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 16px; border-radius: 16px;
+      background: rgba(15, 12, 41, 0.4);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      opacity: 0; transform: scale(0.8) translateY(20px);
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .course-node.visible { opacity: 1; transform: scale(1) translateY(0); }
+    .course-node:hover { 
+      transform: scale(1.08) translateY(-8px); 
+      background: rgba(255, 255, 255, 0.08); 
+      border-color: rgba(255, 255, 255, 0.2);
+      z-index: 100; 
+    }
+    
+    /* Left status accent bar */
+    .course-node::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+      background: rgba(255, 255, 255, 0.1); transition: all 0.3s;
+    }
+
+    .node-code { font-family: 'Space Grotesk'; font-size: 12px; font-weight: 800; color: var(--text-primary); letter-spacing: 1px; margin-bottom: 4px; }
+    .node-name { font-size: 10px; color: var(--text-sec); font-weight: 500; line-height: 1.3; }
+    .node-cr { position: absolute; bottom: 8px; right: 12px; font-size: 9px; font-weight: 800; color: var(--text-muted); opacity: 0.6; }
+
+    /* Status Color System */
+    .status-completed { border-color: rgba(5, 150, 105, 0.2); background: rgba(5, 150, 105, 0.03); }
+    .status-completed::before { background: var(--sage); box-shadow: none; }
+    .status-completed .node-code { color: var(--sage); text-shadow: 0 0 10px var(--sage-glow); }
+    
+    .status-active { border-color: rgba(139, 92, 246, 0.4); background: rgba(139, 92, 246, 0.05); }
+    .status-active::before { background: var(--lavender); box-shadow: 0 0 12px var(--lavender); }
+    .status-active .node-code { color: var(--lavender); text-shadow: 0 0 10px var(--lavender-glow); }
+    
+    .status-retaking { border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.05); }
+    .status-retaking::before { background: var(--gold); box-shadow: 0 0 15px var(--gold); }
+    .status-retaking .node-code { color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); }
+    
+    .status-failed { border-color: rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.03); }
+    .status-failed::before { background: var(--red); box-shadow: none; }
+    .status-failed .node-code { color: var(--red); text-shadow: 0 0 10px var(--red-glow); }
+    
+    .status-locked { opacity: 0.3; filter: grayscale(1); border-style: dashed; }
+    .status-locked::before { background: var(--text-muted); box-shadow: none; }
+    .status-locked .node-code { color: var(--text-muted); }
+
+    /* RETAKING */
+    .status-retaking { border: 1px solid rgba(251, 191, 36, 0.5); background: linear-gradient(145deg, rgba(251, 191, 36, 0.1) 0%, rgba(15, 12, 41, 0.8) 100%); box-shadow: 0 8px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(251, 191, 36, 0.2), 0 0 20px rgba(251, 191, 36, 0.15); }
+    .status-retaking::before { background: linear-gradient(180deg, var(--gold), #f59e0b); }
+    .status-retaking .node-code { color: var(--gold); text-shadow: 0 0 8px rgba(251, 191, 36, 0.4); }
+    .status-retaking .node-status-icon { background: rgba(251, 191, 36, 0.2); color: var(--gold); box-shadow: 0 0 10px rgba(251, 191, 36, 0.3); }
+
+    #prereq-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+    .prereq-path { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 2; transition: all 0.3s ease; stroke-linecap: round; }
+    .path-completed { stroke-width: 2.5; stroke: url(#edgeGradComplete); opacity: 0.75; filter: drop-shadow(0 0 4px rgba(52, 211, 153, 0.4)); }
+    .path-active-edge { stroke: rgba(167, 139, 250, 0.4); stroke-width: 2.5; stroke-dasharray: 8 6; animation: flowDash 1.5s linear infinite; }
+    @keyframes flowDash { to { stroke-dashoffset: -28; } }
+    .path-failed-edge { stroke: rgba(248, 113, 113, 0.35); stroke-width: 2; stroke-dasharray: 4 4; }
+    .path-highlight { stroke: var(--lavender) !important; stroke-width: 3.5 !important; filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.8)) drop-shadow(0 0 3px rgba(167, 139, 250, 1)) !important; opacity: 1 !important; stroke-dasharray: none !important; animation: none !important; }
+
+    #aether-tooltip {
+      position: absolute; background: rgba(15, 12, 41, 0.95); backdrop-filter: blur(12px) saturate(1.5);
+      border: 1px solid rgba(167, 139, 250, 0.3); border-radius: 16px; padding: 18px 20px;
+      pointer-events: none; z-index: 9999; opacity: 0; transition: opacity 0.2s ease;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(167, 139, 250, 0.15); min-width: 200px;
+      transform: translate(-50%, calc(-100% - 16px));
+    }
+    .tt-code { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--lavender); margin-bottom: 6px; }
+    .tt-name { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; line-height: 1.3; }
+    .tt-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+    .tt-val { font-family: 'Space Grotesk', sans-serif; color: var(--text-sec); font-weight: 600; }
+    .tt-prereq { font-family: 'Space Grotesk', sans-serif; color: var(--sage); font-weight: 600; }
+    .tt-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 10px 0; }
+
+    .scroll-btn { position: fixed; bottom: 32px; right: 32px; z-index: 500; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+    .scroll-chip {
+      display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 100px;
+      background: rgba(15, 12, 41, 0.6); border: 1px solid var(--border-light); color: var(--text-sec);
+      font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; backdrop-filter: blur(12px); box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .scroll-chip:hover { background: rgba(167, 139, 250, 0.1); border-color: rgba(167, 139, 250, 0.4); color: var(--lavender); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 16px rgba(167, 139, 250, 0.2); }
+    .scroll-chip.primary { background: linear-gradient(135deg, #4f46e5, #7c3aed); border-color: transparent; color: white; }
+    .scroll-chip.primary:hover { filter: brightness(1.15); box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 20px rgba(124, 58, 237, 0.4); }
+
+    /* GPA TRAJECTORY MODAL */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(10, 8, 24, 0.85); backdrop-filter: blur(16px); z-index: 3000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .modal-backdrop.open { opacity: 1; pointer-events: all; }
+    .modal-card { background: rgba(25, 20, 50, 0.85); border: 1px solid var(--border-light); border-radius: 24px; width: 800px; max-width: 94vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 40px 100px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1); transform: translateY(24px) scale(0.97); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); backdrop-filter: blur(24px) saturate(1.5); }
+    .modal-backdrop.open .modal-card { transform: translateY(0) scale(1); }
+    .modal-header { padding: 32px 40px 0; display: flex; align-items: flex-start; justify-content: space-between; }
+    .modal-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(167, 139, 250, 0.1); color: var(--lavender); border: 1px solid rgba(167, 139, 250, 0.3); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; margin-bottom: 16px; }
+    .modal-chip::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--lavender); box-shadow: 0 0 8px var(--lavender); animation: dotPulse 2s ease infinite; }
+    .modal-title { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-primary); margin-bottom: 6px; }
+    .modal-subtitle { font-size: 14px; color: var(--text-muted); }
+    .modal-close { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--text-sec); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+    .modal-close:hover { border-color: rgba(248, 113, 113, 0.5); color: var(--red); background: rgba(248, 113, 113, 0.1); transform: rotate(90deg); }
+    .modal-body { padding: 32px 40px 40px; }
+    .modal-kpi-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+    .kpi-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 20px 16px; text-align: center; position: relative; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+    .kpi-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%); pointer-events: none; }
+    .kpi-label { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; }
+    .kpi-value { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 700; line-height: 1; }
+    .kpi-value.sage { color: var(--sage); text-shadow: 0 0 16px rgba(52, 211, 153, 0.3); }
+    .kpi-value.purple { color: var(--lavender); text-shadow: 0 0 16px rgba(167, 139, 250, 0.3); }
+    .kpi-value.gold { color: var(--gold); text-shadow: 0 0 16px rgba(251, 191, 36, 0.3); }
+    .kpi-value.red { color: var(--red); text-shadow: 0 0 16px rgba(248, 113, 113, 0.3); }
+    .chart-wrap { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 28px 28px 20px; margin-bottom: 24px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.2); }
+    .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .chart-title { font-size: 12px; font-weight: 600; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; }
+    .chart-legend { display: flex; gap: 20px; }
+    .chart-legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); font-weight: 500; }
+    .chart-legend-dot { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
+    #gpa-chart-svg { width: 100%; display: block; overflow: visible; }
+    .chart-empty { text-align: center; padding: 48px 20px; color: var(--text-muted); font-size: 15px; }
+    .chart-empty-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.5; }
+    .chart-empty-action { margin-top: 20px; display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 100px; background: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.4); color: var(--lavender); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(167, 139, 250, 0.15); }
+    .chart-empty-action:hover { background: rgba(167, 139, 250, 0.2); border-color: var(--lavender); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(167, 139, 250, 0.3); }
+
+    /* ACADEMIC SETUP MODAL */
+    .setup-modal-backdrop { position: fixed; inset: 0; background: rgba(10, 8, 24, 0.85); backdrop-filter: blur(16px); z-index: 4000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .setup-modal-backdrop.open { opacity: 1; pointer-events: all; }
+    .setup-card { background: rgba(25, 20, 50, 0.85); border: 1px solid var(--border-light); border-radius: 24px; width: 720px; max-width: 94vw; max-height: 92vh; overflow-y: auto; box-shadow: 0 40px 100px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1); transform: translateY(28px) scale(0.96); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); backdrop-filter: blur(24px) saturate(1.5); }
+    .setup-modal-backdrop.open .setup-card { transform: translateY(0) scale(1); }
+    .setup-header { padding: 32px 40px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; position: sticky; top: 0; background: rgba(25, 20, 50, 0.95); backdrop-filter: blur(16px); z-index: 10; }
+    .setup-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(52, 211, 153, 0.1); color: var(--sage); border: 1px solid rgba(52, 211, 153, 0.3); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; margin-bottom: 12px; }
+    .setup-title { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-primary); line-height: 1.2; margin-bottom: 6px; }
+    .setup-subtitle { font-size: 14px; color: var(--text-muted); }
+    .setup-body { padding: 32px 40px 40px; }
+    .step-label { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: var(--text-sec); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+    .step-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+    .sem-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 36px; }
+    .sem-tile { background: rgba(255,255,255,0.02); border: 2px solid var(--border); border-radius: 16px; padding: 18px 12px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+    .sem-tile::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 60%); pointer-events: none; opacity: 0; transition: opacity 0.2s; }
+    .sem-tile:hover { border-color: rgba(167, 139, 250, 0.4); background: rgba(167, 139, 250, 0.05); transform: translateY(-2px); }
+    .sem-tile:hover::before { opacity: 1; }
+    .sem-tile.selected { border-color: var(--lavender); background: rgba(167, 139, 250, 0.1); box-shadow: 0 8px 24px rgba(167, 139, 250, 0.2); transform: translateY(-4px); }
+    .sem-tile-num { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; color: var(--lavender); line-height: 1; margin-bottom: 6px; text-shadow: 0 0 12px rgba(167, 139, 250, 0.3); }
+    .sem-tile-lbl { font-size: 11px; color: var(--text-sec); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+    .sem-entry-cards { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
+    .sem-entry-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 24px; transition: border-color 0.2s, box-shadow 0.2s; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); }
+    .sem-entry-card:focus-within { border-color: rgba(167, 139, 250, 0.4); box-shadow: 0 4px 20px rgba(167, 139, 250, 0.1), inset 0 2px 10px rgba(0,0,0,0.1); }
+    .sem-entry-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .sem-entry-title { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+    .sem-entry-badge { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; background: rgba(52, 211, 153, 0.1); color: var(--sage); border: 1px solid rgba(52, 211, 153, 0.3); }
+    .sem-entry-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .entry-field label { display: block; font-size: 11px; font-weight: 600; color: var(--text-sec); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+    .gpa-input-wrap { display: flex; align-items: center; gap: 12px; }
+    .gpa-slider { flex: 1; height: 6px; -webkit-appearance: none; appearance: none; background: rgba(255,255,255,0.1); border-radius: 100px; outline: none; cursor: pointer; }
+    .gpa-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #4f46e5, #0ea5e9); cursor: pointer; border: 2px solid rgba(255,255,255,0.8); box-shadow: 0 2px 10px rgba(0,0,0,0.5), 0 0 10px rgba(79, 70, 229, 0.5); transition: transform 0.1s; }
+    .gpa-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+    .gpa-num { width: 64px; padding: 8px 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-light); border-radius: 10px; color: var(--text-primary); font-size: 15px; font-weight: 600; text-align: center; font-family: 'Space Grotesk', monospace; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .gpa-num:focus { border-color: var(--lavender); box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2); }
+    .failed-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .failed-chip { padding: 6px 12px; border-radius: 100px; border: 1px solid var(--border-light); background: rgba(255,255,255,0.02); color: var(--text-sec); font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .failed-chip:hover { border-color: rgba(248, 113, 113, 0.5); color: var(--red); background: rgba(248, 113, 113, 0.1); transform: translateY(-1px); }
+    .failed-chip.selected { border-color: var(--red); color: var(--red); background: rgba(239, 68, 68, 0.15); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
+    .failed-chip.retake-chip.selected { border-color: var(--gold); color: var(--gold); background: rgba(245, 158, 11, 0.15); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
+    .setup-save-btn { width: 100%; padding: 18px; border-radius: 16px; background: linear-gradient(135deg, #4f46e5 0%, #0ea5e9 100%); background-size: 200% 200%; color: white; border: none; font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; letter-spacing: 0.5px; box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4); }
+    .setup-save-btn:hover { background-position: right center; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(79, 70, 229, 0.5); }
+    .setup-save-btn:active { transform: translateY(0); }
+
+    /* --- RESPONSIVE NEXUS --- */
+    @media (max-width: 1024px) {
+      .header-center { display: none; } /* Hide sem nav on small screens */
+      .legend-row { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .header { padding: 0 16px; }
+      .logo-sub { display: none; }
+      .user-meta { display: none; }
+      .user-trigger { padding: 6px; }
+      
+      .side-panel { width: 100%; right: -100%; }
+      .panel-user-card { padding: 20px; }
+      .panel-body { padding: 20px; }
+      .panel-stat-grid { grid-template-columns: 1fr; }
+      
+      .modal-card, .setup-card { padding: 0; width: 100%; height: 100%; max-height: 100%; border-radius: 0; }
+      .modal-header, .setup-header { padding: 20px; }
+      .modal-body, .setup-body { padding: 20px; }
+      .modal-kpi-row { grid-template-columns: 1fr 1fr; }
+      .sem-grid { grid-template-columns: repeat(2, 1fr); }
+      .sem-entry-row { grid-template-columns: 1fr; }
+      
+      .welcome-banner h2 { font-size: 20px; }
+      .welcome-banner p { font-size: 11px; padding: 0 20px; }
+      
+      .scroll-btn { bottom: 16px; right: 16px; }
+      .scroll-chip { font-size: 11px; padding: 8px 16px; }
+    }
+
+    @media (max-width: 480px) {
+      .modal-kpi-row { grid-template-columns: 1fr; }
+      .kpi-value { font-size: 28px; }
+      .sem-tile-num { font-size: 24px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="background-ambient">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="bg-text animate-scale" style="animation-delay: 0.2s" id="nexus-bg-text">NEXUS</div>
+  </div>
+  <div class="overlay" id="overlay" onclick="closePanel()"></div>
+
+  <div class="welcome-banner" id="welcome-banner">
+    <h2>Your Academic Skill Tree</h2>
+    <p>Drag to explore your courses. Click any node to manage it. Track your entire degree in one spatial map.</p>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <a class="header-logo" href="#">
+      <div class="logo-mark">Æ</div>
+      <div class="logo-text"><span class="logo-wordmark">AETHER</span><span class="logo-sub">Learning OS</span></div>
+    </a>
+    <nav class="header-center" id="sem-nav"></nav>
+    <div class="header-right">
+      <div class="legend-row">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--sage)"></div><span>Completed</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--lavender)"></div><span>Current</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div><span>Retaking</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--text-muted)"></div><span>Upcoming</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div><span>Failed</span></div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="user-trigger" onclick="openPanel()" id="user-trigger">
+        <div class="user-avatar" id="hdr-avatar">?</div>
+        <div class="user-meta">
+          <div class="user-name-hdr" id="hdr-name">Guest</div>
+          <div class="user-roll-hdr" id="hdr-roll">–––</div>
+        </div>
+        <div class="burger-icon"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SIDE PANEL -->
+  <aside class="side-panel" id="side-panel">
+    <div class="panel-top">
+      <span class="panel-top-title">My Profile</span>
+      <button class="panel-close-btn" onclick="closePanel()">✕</button>
+    </div>
+    <div class="panel-user-card">
+      <div class="panel-avatar" id="panel-avatar">?</div>
+      <div class="panel-user-info">
+        <div class="panel-user-name" id="panel-name">Guest Student</div>
+        <div class="panel-user-roll" id="panel-roll">–––</div>
+        <div class="panel-badge">AI Programme</div>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="panel-stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">CGPA</div>
+          <div class="stat-value" id="panel-gpa">–</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Credits</div>
+          <div class="stat-value purple" id="panel-credits">–</div>
+        </div>
+      </div>
+      <div class="panel-progress-section">
+        <div class="progress-header">
+          <span class="progress-title">Degree Progress</span>
+          <span class="progress-pct" id="progress-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+        <div class="progress-sub" id="progress-sub">0 of ~130 credits completed</div>
+      </div>
+      <div class="panel-nav">
+        <button class="panel-nav-btn" onclick="location.href='hub.html'"><div class="btn-icon">🏛</div><span>Animus Hub</span></button>
+        <button class="panel-nav-btn" onclick="closePanel()"><div class="btn-icon">🗺</div><span>Back to Course Map</span></button>
+        <button class="panel-nav-btn" onclick="location.href='analysis.html'"><div class="btn-icon" style="color:var(--lavender)">✦</div><span>Intelligence Report</span></button>
+        <button class="panel-nav-btn" onclick="location.href='chronicle.html'"><div class="btn-icon">📜</div><span>Academic Chronicle</span></button>
+        <button class="panel-nav-btn" onclick="openTrajectory()"><div class="btn-icon">📈</div><span>GPA Trajectory</span></button>
+        <button class="panel-nav-btn" onclick="openSetup()"><div class="btn-icon">✏️</div><span>Update Academic Data</span></button>
+      </div>
+    </div>
+    <div class="panel-footer"><button class="logout-btn" onclick="logout()">Sign out of AETHER</button></div>
+  </aside>
+
+  <!-- GRAPH -->
+  <div class="graph-viewport" id="graph-vp">
+    <div id="graph-content">
+      <svg id="prereq-svg"></svg>
+      <div id="aether-tooltip"></div>
+    </div>
+  </div>
+
+  <div class="scroll-btn">
+    <div class="scroll-chip primary" onclick="jumpToCurrentSem()">↪ Jump to Current Semester</div>
+    <div class="scroll-chip" onclick="scrollToStart()">⟵ Start</div>
+  </div>
+
+  <!-- GPA TRAJECTORY MODAL -->
+  <div class="modal-backdrop" id="traj-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div class="modal-chip">Live Analysis</div>
+          <h2 class="modal-title">GPA Trajectory</h2>
+          <p class="modal-subtitle">Semester-by-semester performance & projection</p>
+        </div>
+        <button class="modal-close" onclick="closeTrajectory()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-kpi-row">
+          <div class="kpi-card"><div class="kpi-label">Current CGPA</div><div class="kpi-value sage" id="kpi-cgpa">–</div></div>
+          <div class="kpi-card"><div class="kpi-label">Best Semester</div><div class="kpi-value purple" id="kpi-best">–</div></div>
+          <div class="kpi-card"><div class="kpi-label">Projected Final</div><div class="kpi-value gold" id="kpi-proj">–</div></div>
+          <div class="kpi-card"><div class="kpi-label">Failed Subjects</div><div class="kpi-value red" id="kpi-fails">–</div></div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-header">
+            <div class="chart-title">Semester GPA Overview</div>
+            <div class="chart-legend">
+              <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--sage);color:var(--sage)"></div>Semester GPA</div>
+              <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--gold);color:var(--gold)"></div>Cumulative GPA</div>
+              <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--red);color:var(--red)"></div>Failed Courses</div>
+            </div>
+          </div>
+          <div id="chart-container"><svg id="gpa-chart-svg"></svg></div>
+        </div>
+        <div id="traj-update-hint" style="text-align:center;margin-top:16px">
+          <span style="font-size:13px;color:var(--text-muted)">No data yet? </span>
+          <span style="font-size:13px;color:var(--lavender);cursor:pointer;font-weight:600;text-decoration:underline;text-underline-offset:2px;transition:color 0.2s" onmouseover="this.style.color='#c4b5fd'" onmouseout="this.style.color='var(--lavender)'" onclick="closeTrajectory();setTimeout(openSetup,200)">Set up your academic profile →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACADEMIC SETUP MODAL -->
+  <div class="setup-modal-backdrop" id="setup-modal">
+    <div class="setup-card">
+      <div class="setup-header">
+        <div>
+          <div class="setup-chip">📚 Academic Profile</div>
+          <h2 class="setup-title">Set Up Your Academic Data</h2>
+          <p class="setup-subtitle">Tell AETHER where you are — and it'll track where you're going.</p>
+        </div>
+        <button class="modal-close" onclick="closeSetup()">✕</button>
+      </div>
+      <div class="setup-body">
+        <div class="step-label">Step 1 — Current Semester</div>
+        <div class="sem-grid" id="sem-picker-grid"></div>
+        <div id="grade-entry-section" style="display:none">
+          <div class="step-label">Step 2 — Completed Semester Grades</div>
+          <div class="sem-entry-cards" id="sem-entry-cards"></div>
+        </div>
+        <button class="setup-save-btn" onclick="saveAcademicData()">Save Academic Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* COURSE DATA */
+    const courseData = [
+      { id: "NS1001", name: "Applied Physics", cr: 3, sem: 1, x: 80, y: 80 },
+      { id: "MT1003", name: "Calculus & Geometry", cr: 3, sem: 1, x: 80, y: 230 },
+      { id: "SS1012", name: "Functional English", cr: 3, sem: 1, x: 80, y: 380 },
+      { id: "SS1013", name: "Ideology of Pakistan", cr: 2, sem: 1, x: 80, y: 530 },
+      { id: "CS1005", name: "Intro to ICT", cr: 3, sem: 1, x: 80, y: 680 },
+      { id: "SS1015", name: "Pakistan Studies", cr: 2, sem: 1, x: 80, y: 830 },
+      { id: "CS1002", name: "Programming Fundamentals", cr: 4, sem: 1, x: 80, y: 980 },
+      { id: "SS2043", name: "Civics & Community", cr: 3, sem: 2, x: 530, y: 80 },
+      { id: "EE1005", name: "Digital Logic Design", cr: 4, sem: 2, x: 530, y: 230, prereqs: ["NS1001"] },
+      { id: "SS1014", name: "Expository Writing", cr: 3, sem: 2, x: 530, y: 380, prereqs: ["SS1012"] },
+      { id: "SS1007", name: "Islamic Studies", cr: 2, sem: 2, x: 530, y: 530 },
+      { id: "MT1008", name: "Multivariable Calculus", cr: 3, sem: 2, x: 530, y: 680, prereqs: ["MT1003"] },
+      { id: "CS1004", name: "Object Oriented Prog.", cr: 4, sem: 2, x: 530, y: 830, prereqs: ["CS1002"] },
+      { id: "SS1019", name: "Sirat-Un-Nabi", cr: 2, sem: 2, x: 530, y: 980 },
+      { id: "EE2003", name: "COAL", cr: 4, sem: 3, x: 980, y: 150, prereqs: ["EE1005"] },
+      { id: "CS2001", name: "Data Structures", cr: 4, sem: 3, x: 980, y: 300, prereqs: ["CS1004"] },
+      { id: "CS2005", name: "Discrete Structures", cr: 3, sem: 3, x: 980, y: 450 },
+      { id: "MT1004", name: "Linear Algebra", cr: 3, sem: 3, x: 980, y: 600, prereqs: ["MT1008"] },
+      { id: "AI2001", name: "Programming for AI", cr: 4, sem: 3, x: 980, y: 750, prereqs: ["CS1002"] },
+      { id: "SS1001", name: "Quran I", cr: 1, sem: 3, x: 980, y: 900 },
+      { id: "CS3005", name: "Database Systems", cr: 4, sem: 4, x: 1430, y: 150, prereqs: ["CS2001"] },
+      { id: "AI2002", name: "Artificial Intelligence", cr: 4, sem: 4, x: 1430, y: 300, prereqs: ["CS2001", "AI2001"] },
+      { id: "CS3004", name: "Fund. of Software Eng.", cr: 3, sem: 4, x: 1430, y: 450, prereqs: ["CS1004"] },
+      { id: "CS2006", name: "Operating Systems", cr: 4, sem: 4, x: 1430, y: 600, prereqs: ["CS2001"] },
+      { id: "MT2005", name: "Probability & Statistics", cr: 3, sem: 4, x: 1430, y: 750 },
+      { id: "SS1002", name: "Quran II", cr: 1, sem: 4, x: 1430, y: 900 },
+      { id: "CS3001", name: "Computer Networks", cr: 4, sem: 5, x: 1880, y: 230, prereqs: ["CS2006"] },
+      { id: "CS3004A", name: "Design & Analysis Algo.", cr: 3, sem: 5, x: 1880, y: 380, prereqs: ["CS2001"] },
+      { id: "AI3001", name: "Knowledge Representation", cr: 3, sem: 5, x: 1880, y: 530, prereqs: ["AI2002"] },
+      { id: "AI3002", name: "Machine Learning", cr: 4, sem: 5, x: 1880, y: 680, prereqs: ["AI2002"] },
+      { id: "SS2007", name: "Tech & Business Writing", cr: 3, sem: 5, x: 1880, y: 830 },
+      { id: "AI3003", name: "Artificial Neural Nets", cr: 3, sem: 6, x: 2330, y: 230, prereqs: ["AI3002"] },
+      { id: "AI4002", name: "Computer Vision", cr: 4, sem: 6, x: 2330, y: 380, prereqs: ["AI3002"] },
+      { id: "CS3006", name: "Parallel & Dist. Comp.", cr: 3, sem: 6, x: 2330, y: 530, prereqs: ["CS2006"] },
+      { id: "AI-E1", name: "AI Elective I", cr: 3, sem: 6, x: 2330, y: 680 },
+      { id: "SS-E1", name: "SS/MG Elective I", cr: 3, sem: 6, x: 2330, y: 830 },
+      { id: "AI4091", name: "Final Year Project I", cr: 3, sem: 7, x: 2780, y: 230 },
+      { id: "MG4011", name: "Entrepreneurship", cr: 3, sem: 7, x: 2780, y: 380 },
+      { id: "AI-E2", name: "AI Elective II", cr: 3, sem: 7, x: 2780, y: 530 },
+      { id: "AI-E3", name: "AI Elective III", cr: 3, sem: 7, x: 2780, y: 680 },
+      { id: "SS-E2", name: "SS/MG Elective II", cr: 3, sem: 7, x: 2780, y: 830 },
+      { id: "AI4092", name: "Final Year Project II", cr: 3, sem: 8, x: 3230, y: 150, prereqs: ["AI4091"] },
+      { id: "CS3002", name: "Information Security", cr: 3, sem: 8, x: 3230, y: 300 },
+      { id: "CS4001", name: "Professional Practices", cr: 3, sem: 8, x: 3230, y: 450 },
+      { id: "AI-E4", name: "AI Elective IV", cr: 3, sem: 8, x: 3230, y: 600 },
+      { id: "AI-E5", name: "AI Elective V", cr: 3, sem: 8, x: 3230, y: 750 },
+      { id: "CS3019", name: "Computing Internship", cr: 3, sem: 8, x: 3230, y: 900 },
+    ];
+    const NODE_W = 140, NODE_H = 85;
+
+    /* STATE */
+    let academicProfile = null;
+
+    async function loadProfile() {
+      try {
+        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (user && user.roll_no) {
+            const res = await fetch('/api/get-profile/' + user.roll_no);
+            const data = await res.json();
+            if (data.success && data.profile) {
+                academicProfile = data.profile;
+                localStorage.setItem('aether_profile', JSON.stringify(academicProfile));
+            } else {
+                academicProfile = JSON.parse(localStorage.getItem('aether_profile'));
+            }
+        } else {
+            academicProfile = JSON.parse(localStorage.getItem('aether_profile'));
+        }
+      } catch (e) { }
+      return academicProfile;
+    }
+    function getCurrentSem() { return academicProfile?.currentSem ?? 1; }
+    function getFailedCodes() { if (!academicProfile?.semesters) return []; return academicProfile.semesters.flatMap(s => s.failedIds || []); }
+    function getRetakeCodes() { if (!academicProfile?.semesters) return []; return academicProfile.semesters.flatMap(s => s.retakeIds || []); }
+
+    /* EFFECTIVE SEMESTER COMPUTATION */
+    function computeEffectiveSems() {
+      const failed = getFailedCodes(); const retaking = getRetakeCodes(); const cur = getCurrentSem();
+      const eff = {}; courseData.forEach(c => eff[c.id] = c.sem);
+      
+      // Courses being retaken effectively happen NOW
+      retaking.forEach(id => { eff[id] = cur; });
+      // Failed courses (not retaking) are pushed to next sem
+      failed.forEach(id => { if (!retaking.includes(id)) { const c = courseData.find(x => x.id === id); if (c) eff[id] = c.sem + 1; } });
+
+      const sorted = [...courseData].sort((a, b) => a.sem - b.sem);
+      for (let pass = 0; pass < 9; pass++) {
+        let changed = false;
+        sorted.forEach(c => {
+          if (!c.prereqs) return;
+          c.prereqs.forEach(pid => {
+            if (eff[pid] !== undefined && eff[pid] >= eff[c.id]) { eff[c.id] = eff[pid] + 1; changed = true; }
+          });
+        });
+        if (!changed) break;
+      }
+      return eff;
+    }
+
+    /* NODE STATUS */
+    function getStatus(c) {
+      const failed = getFailedCodes(); const retaking = getRetakeCodes(); const cur = getCurrentSem();
+      const eff = computeEffectiveSems(); const effSem = eff[c.id];
+      
+      if (retaking.includes(c.id)) return 'status-retaking';
+      
+      // FORWARD RESOLUTION: If any dependent course is Active/Retaking, this course isn't "Failed" anymore
+      const dependents = courseData.filter(x => x.prereqs && x.prereqs.includes(c.id));
+      const hasActiveDependent = dependents.some(d => {
+        const dEff = eff[d.id];
+        return dEff === cur || retaking.includes(d.id);
+      });
+
+      if (failed.includes(c.id) && !hasActiveDependent) return 'status-failed';
+      if (effSem < cur || (failed.includes(c.id) && hasActiveDependent)) return 'status-completed';
+      if (effSem === cur) return 'status-active';
+      return 'status-locked';
+    }
+
+    /* BUILD COURSE GRAPH */
+    function buildSemNav() {
+      const nav = document.getElementById('sem-nav'); nav.innerHTML = ''; const cur = getCurrentSem();
+      [...new Set(courseData.map(c => c.sem))].sort().forEach(s => {
+        const pill = document.createElement('button'); pill.className = 'sem-pill' + (s < cur ? ' done-sem' : s === cur ? ' active-sem' : '');
+        pill.textContent = `Sem ${s}`; pill.onclick = () => scrollToSem(s); nav.appendChild(pill);
+      });
+    }
+
+    function renderLaneLabels() {
+      const gc = document.getElementById('graph-content'); document.querySelectorAll('.sem-lane-label').forEach(el => el.remove());
+      const cur = getCurrentSem(); const laneX = {}; courseData.forEach(c => { laneX[c.sem] = Math.min(laneX[c.sem] ?? 999999, c.x); });
+      Object.entries(laneX).forEach(([sem, x]) => {
+        const s = parseInt(sem); const div = document.createElement('div'); div.className = 'sem-lane-label'; div.style.left = `${x}px`;
+        const tag = document.createElement('div'); tag.className = 'sem-lane-tag ' + (s < cur ? 'done-tag' : s === cur ? 'active-tag' : 'locked-tag');
+        tag.textContent = `Semester ${sem}`; div.appendChild(tag); gc.appendChild(div);
+      });
+    }
+
+    function generateNodes() {
+      const gc = document.getElementById('graph-content'); 
+      const tip = document.getElementById('aether-tooltip');
+      const eff = computeEffectiveSems();
+      
+      document.querySelectorAll('.course-node').forEach(el => el.remove());
+
+      const hasProfile = academicProfile && academicProfile.currentSem;
+
+      courseData.forEach((c, i) => {
+        const status = getStatus(c);
+        
+        // Show ALL courses as requested, but keep them 'Locked' visually if no data
+        const node = document.createElement('div');
+        node.className = `course-node ${status}`;
+        node.style.left = `${c.x}px`;
+        node.style.top = `${c.y}px`;
+        node.dataset.id = c.id;
+        
+        node.innerHTML = `
+          <div class="node-code">${c.id}</div>
+          <div class="node-name">${c.name}</div>
+          <div class="node-cr">${c.cr}cr</div>
+        `;
+
+        node.onclick = () => { window.location.href = `Course data.html?course=${c.id}`; };
+        node.onmouseenter = () => {
+          const prereqStr = c.prereqs?.join(', ') || 'None';
+          const effSem = eff[c.id];
+          const delayNote = effSem > c.sem ? `<div class="tt-row"><span>Effective Sem</span><span class="tt-val" style="color:var(--gold)">→ Sem ${effSem}</span></div>` : '';
+          tip.innerHTML = `<div class="tt-code">${c.id}</div><div class="tt-name">${c.name}</div><div class="tt-divider"></div><div class="tt-row"><span>Credits</span><span class="tt-val">${c.cr}</span></div><div class="tt-row"><span>Original Sem</span><span class="tt-val">${c.sem}</span></div>${delayNote}<div class="tt-row"><span>Prerequisites</span><span class="tt-prereq">${prereqStr}</span></div>`;
+          tip.style.left = `${c.x + NODE_W / 2}px`; tip.style.top = `${c.y}px`; tip.style.opacity = '1';
+          highlightEdges(c.id);
+        };
+        node.onmouseleave = () => { tip.style.opacity = '0'; clearHighlight(); };
+        
+        gc.appendChild(node);
+        setTimeout(() => node.classList.add('visible'), 50 + (i * 10)); // Faster staggered pop
+      });
+    }
+
+    function drawEdges() {
+      const svg = document.getElementById('prereq-svg'); svg.innerHTML = ''; svg.setAttribute('viewBox', '0 0 3200 1100');
+      const failed = getFailedCodes(); const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+
+      const gradComplete = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+      gradComplete.setAttribute('id', 'edgeGradComplete'); gradComplete.setAttribute('gradientUnits', 'userSpaceOnUse');
+      [['0%', '#34d399'], ['100%', '#a78bfa']].forEach(([o, c]) => { const s = document.createElementNS('http://www.w3.org/2000/svg', 'stop'); s.setAttribute('offset', o); s.setAttribute('stop-color', c); s.setAttribute('stop-opacity', '0.8'); gradComplete.appendChild(s); });
+
+      const glowFilter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+      glowFilter.setAttribute('id', 'edgeGlow'); glowFilter.setAttribute('x', '-20%'); glowFilter.setAttribute('y', '-200%'); glowFilter.setAttribute('width', '140%'); glowFilter.setAttribute('height', '500%');
+      const feBlur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur'); feBlur.setAttribute('in', 'SourceGraphic'); feBlur.setAttribute('stdDeviation', '3'); feBlur.setAttribute('result', 'blur');
+      const feMerge = document.createElementNS('http://www.w3.org/2000/svg', 'feMerge'); const fm1 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode'); fm1.setAttribute('in', 'blur'); const fm2 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode'); fm2.setAttribute('in', 'SourceGraphic');
+      feMerge.appendChild(fm1); feMerge.appendChild(fm2); glowFilter.appendChild(feBlur); glowFilter.appendChild(feMerge);
+
+      function makeMarker(id, color, size) {
+        const m = document.createElementNS('http://www.w3.org/2000/svg', 'marker'); m.setAttribute('id', id); m.setAttribute('markerWidth', size); m.setAttribute('markerHeight', size); m.setAttribute('refX', size - 1); m.setAttribute('refY', size / 2); m.setAttribute('orient', 'auto'); m.setAttribute('markerUnits', 'userSpaceOnUse');
+        const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); const h = size / 2, b = size * 0.6; p.setAttribute('d', `M 0,0 L ${b},${h} L 0,${size} L ${h * 0.4},${h} Z`); p.setAttribute('fill', color); m.appendChild(p); return m;
+      }
+      const markers = [ 
+        makeMarker('arr-default', 'rgba(255,255,255,0.1)', 10), 
+        makeMarker('arr-done', '#059669', 10), 
+        makeMarker('arr-active', '#8b5cf6', 10), 
+        makeMarker('arr-failed', '#ef4444', 10), 
+        makeMarker('arr-retaking', '#f59e0b', 10) 
+      ];
+      defs.appendChild(gradComplete); defs.appendChild(glowFilter); markers.forEach(m => defs.appendChild(m)); svg.appendChild(defs);
+
+      courseData.forEach(target => {
+        if (!target.prereqs) return;
+        target.prereqs.forEach(pid => {
+          const src = courseData.find(c => c.id === pid); if (!src) return;
+          const x1 = src.x + NODE_W, y1 = src.y + NODE_H / 2; const x2 = target.x, y2 = target.y + NODE_H / 2; const mx = (x1 + x2) / 2;
+          const srcStatus = getStatus(src); const tgtStatus = getStatus(target);
+          const isComplete = srcStatus === 'status-completed' && (tgtStatus === 'status-completed' || tgtStatus === 'status-active' || tgtStatus === 'status-retaking');
+          const isFailed = failed.includes(pid) || failed.includes(target.id);
+          const isActive = tgtStatus === 'status-active' || tgtStatus === 'status-retaking';
+
+          const gid = `eg_${src.id}_${target.id}`.replace(/[^a-z0-9_]/gi, '_');
+          const lg = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient'); lg.setAttribute('id', gid); lg.setAttribute('gradientUnits', 'userSpaceOnUse'); lg.setAttribute('x1', x1); lg.setAttribute('y1', y1); lg.setAttribute('x2', x2); lg.setAttribute('y2', y2);
+          [['0%', '#34d399', '0.7'], ['100%', '#a78bfa', '0.7']].forEach(([o, c, op]) => { const s = document.createElementNS('http://www.w3.org/2000/svg', 'stop'); s.setAttribute('offset', o); s.setAttribute('stop-color', c); s.setAttribute('stop-opacity', op); lg.appendChild(s); }); defs.appendChild(lg);
+
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path'); path.setAttribute('d', `M ${x1},${y1} C ${mx},${y1} ${mx},${y2} ${x2},${y2}`); path.setAttribute('data-from', pid); path.setAttribute('data-to', target.id);
+          if (isComplete) { path.setAttribute('class', 'prereq-path path-completed'); path.setAttribute('stroke', `url(#${gid})`); path.setAttribute('filter', 'url(#edgeGlow)'); path.setAttribute('marker-end', 'url(#arr-done)'); }
+          else if (srcStatus === 'status-retaking' || tgtStatus === 'status-retaking') { path.setAttribute('class', 'prereq-path path-retake-edge'); path.setAttribute('marker-end', 'url(#arr-retaking)'); }
+          else if (isFailed) { path.setAttribute('class', 'prereq-path path-failed-edge'); path.setAttribute('marker-end', 'url(#arr-failed)'); }
+          else if (isActive) { path.setAttribute('class', 'prereq-path path-active-edge'); path.setAttribute('marker-end', 'url(#arr-active)'); }
+          else { path.setAttribute('class', 'prereq-path'); path.setAttribute('marker-end', 'url(#arr-default)'); }
+          svg.appendChild(path);
+        });
+      });
+    }
+
+    function highlightEdges(id) { document.querySelectorAll(`.prereq-path[data-from="${id}"],.prereq-path[data-to="${id}"]`).forEach(p => { p.classList.add('path-highlight'); p.setAttribute('marker-end', 'url(#arr-hl)'); }); }
+    function clearHighlight() { document.querySelectorAll('.prereq-path').forEach(p => { p.classList.remove('path-highlight'); if (p.classList.contains('path-completed')) p.setAttribute('marker-end', 'url(#arr-done)'); else if (p.classList.contains('path-active-edge')) p.setAttribute('marker-end', 'url(#arr-active)'); else if (p.classList.contains('path-failed-edge')) p.setAttribute('marker-end', 'url(#arr-failed)'); else p.setAttribute('marker-end', 'url(#arr-default)'); }); }
+
+    /* PANEL & SCROLL */
+    function openPanel() { document.getElementById('side-panel').classList.add('open'); document.getElementById('overlay').classList.add('show'); }
+    function closePanel() { document.getElementById('side-panel').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+    function scrollToSem(sem) { const nodes = courseData.filter(c => c.sem === sem); if (!nodes.length) return; document.getElementById('graph-vp').scrollTo({ left: Math.max(0, Math.min(...nodes.map(c => c.x)) - 60), behavior: 'smooth' }); }
+    function jumpToCurrentSem() { scrollToSem(getCurrentSem()); }
+    function scrollToStart() { document.getElementById('graph-vp').scrollTo({ left: 0, behavior: 'smooth' }); }
+
+    /* SYNC USER UI */
+    function syncState() {
+      const user = JSON.parse(localStorage.getItem('currentUser') || 'null'); if (!user) return;
+      const initials = (user.full_name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+      document.getElementById('hdr-avatar').textContent = initials; document.getElementById('hdr-name').textContent = user.full_name || 'Guest'; document.getElementById('hdr-roll').textContent = user.roll_no || '–';
+      document.getElementById('panel-avatar').textContent = initials; document.getElementById('panel-name').textContent = user.full_name || 'Guest Student'; document.getElementById('panel-roll').textContent = user.roll_no || '–';
+
+      const cur = getCurrentSem(); const completed = courseData.filter(c => c.sem < cur); const totalCr = completed.reduce((a, c) => a + c.cr, 0); const totalAllCr = courseData.reduce((a, c) => a + c.cr, 0); const pct = Math.round((totalCr / totalAllCr) * 100);
+      document.getElementById('panel-credits').textContent = totalCr; document.getElementById('progress-fill').style.width = pct + '%'; document.getElementById('progress-pct').textContent = pct + '%'; document.getElementById('progress-sub').textContent = `${totalCr} of ~${totalAllCr} credits completed`;
+      if (academicProfile?.semesters?.length) { const cgpa = calcCGPA(); document.getElementById('panel-gpa').textContent = cgpa.toFixed(2); }
+    }
+    function calcCGPA() { if (!academicProfile?.semesters?.length) return 0; const total = academicProfile.semesters.reduce((a, s) => a + s.gpa, 0); return total / academicProfile.semesters.length; }
+    function logout() { localStorage.removeItem('currentUser'); window.location.href = 'login.html'; }
+
+    /* ACADEMIC SETUP MODAL */
+    let setupSelectedSem = null;
+    function openSetup() { closePanel(); setupSelectedSem = academicProfile?.currentSem || null; buildSemPicker(); if (setupSelectedSem) buildGradeEntry(setupSelectedSem); document.getElementById('setup-modal').classList.add('open'); }
+    function closeSetup() { document.getElementById('setup-modal').classList.remove('open'); }
+    function buildSemPicker() {
+      const grid = document.getElementById('sem-picker-grid'); grid.innerHTML = '';
+      for (let s = 1; s <= 8; s++) { 
+        const tile = document.createElement('div'); 
+        tile.className = 'sem-tile' + (s === setupSelectedSem ? ' selected' : ''); 
+        tile.innerHTML = `<div class="sem-tile-num">${s}</div><div class="sem-tile-lbl">Semester</div>`; 
+        tile.onclick = () => { 
+          if (setupSelectedSem) captureSetupState(); // Save current UI to memory before switching
+          setupSelectedSem = s; 
+          buildSemPicker(); 
+          buildGradeEntry(s); 
+        }; 
+        grid.appendChild(tile); 
+      }
+    }
+    function buildGradeEntry(currentSem) {
+      const section = document.getElementById('grade-entry-section'); const cards = document.getElementById('sem-entry-cards');
+      if (currentSem <= 1) { section.style.display = 'none'; return; } section.style.display = 'block'; cards.innerHTML = '';
+      const saved = academicProfile?.semesters || [];
+      for (let s = 1; s < currentSem; s++) {
+        const prev = saved.find(x => x.sem === s); 
+        const savedGpa = prev?.gpa ?? 3.0; 
+        const failedIds = prev?.failedIds || []; 
+        const retakeIds = prev?.retakeIds || []; 
+        const semCourses = courseData.filter(c => c.sem === s);
+        
+        const card = document.createElement('div'); card.className = 'sem-entry-card'; card.dataset.sem = s;
+        const failedHtml = semCourses.map(c => `<div class="failed-chip${failedIds.includes(c.id) ? ' selected' : ''}" data-type="failed" data-id="${c.id}" onclick="toggleStatusChip(this)">${c.id}</div>`).join('');
+        const retakeHtml = semCourses.map(c => `<div class="failed-chip retake-chip${retakeIds.includes(c.id) ? ' selected' : ''}" data-type="retake" data-id="${c.id}" onclick="toggleStatusChip(this)">${c.id}</div>`).join('');
+        
+        card.innerHTML = `
+          <div class="sem-entry-head"><div class="sem-entry-title">Semester ${s}<span class="sem-entry-badge">Archive</span></div></div>
+          <div class="sem-entry-row">
+            <div class="entry-field"><label>GPA</label><div class="gpa-input-wrap"><input type="range" class="gpa-slider" min="0" max="4" step="0.01" value="${savedGpa}" oninput="this.nextElementSibling.value=parseFloat(this.value).toFixed(2)"><input type="number" class="gpa-num" min="0" max="4" step="0.01" value="${savedGpa.toFixed(2)}" oninput="this.previousElementSibling.value=this.value"></div></div>
+          </div>
+          <div class="sem-entry-row" style="margin-top:12px">
+            <div class="entry-field"><label>Failed?</label><div class="failed-chips">${failedHtml}</div></div>
+            <div class="entry-field"><label>Retaking?</label><div class="failed-chips">${retakeHtml}</div></div>
+          </div>`;
+        cards.appendChild(card);
+      }
+    }
+    function toggleStatusChip(el) {
+      el.classList.toggle('selected');
+      const id = el.dataset.id;
+      const type = el.dataset.type;
+      const card = el.closest('.sem-entry-card');
+      
+      // If marking as retaking, it MUST be failed
+      if (type === 'retake' && el.classList.contains('selected')) {
+        const failChip = card.querySelector(`.failed-chip[data-id="${id}"][data-type="failed"]`);
+        if (failChip) failChip.classList.add('selected');
+      }
+      // If unmarking as failed, it CANNOT be retaking
+      if (type === 'failed' && !el.classList.contains('selected')) {
+        const retakeChip = card.querySelector(`.failed-chip[data-id="${id}"][data-type="retake"]`);
+        if (retakeChip) retakeChip.classList.remove('selected');
+      }
+    }
+    function captureSetupState() {
+      if (!setupSelectedSem) return;
+      const currentCards = [];
+      document.querySelectorAll('.sem-entry-card').forEach(card => {
+        const s = parseInt(card.dataset.sem); 
+        const gpa = parseFloat(card.querySelector('.gpa-num').value) || 0; 
+        const failedIds = [...card.querySelectorAll('.failed-chip[data-type="failed"].selected')].map(el => el.dataset.id);
+        const retakeIds = [...card.querySelectorAll('.failed-chip[data-type="retake"].selected')].map(el => el.dataset.id);
+        currentCards.push({ sem: s, gpa: Math.min(4, Math.max(0, gpa)), failedIds, retakeIds });
+      });
+      
+      // Merge: Keep existing data for semesters not currently being edited
+      let finalSemesters = [...(academicProfile?.semesters || [])];
+      currentCards.forEach(newSem => {
+        const idx = finalSemesters.findIndex(s => s.sem === newSem.sem);
+        if (idx !== -1) finalSemesters[idx] = newSem;
+        else finalSemesters.push(newSem);
+      });
+      
+      // Clean up: Remove data for semesters >= current selected sem
+      finalSemesters = finalSemesters.filter(s => s.sem < setupSelectedSem);
+      
+      academicProfile = { ...academicProfile, currentSem: setupSelectedSem, semesters: finalSemesters };
+    }
+    async function saveAcademicData() {
+      if (!setupSelectedSem) { alert('Please select your current semester first.'); return; }
+      captureSetupState(); // Final capture
+      localStorage.setItem('aether_profile', JSON.stringify(academicProfile));
+      
+      const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      if (user && user.roll_no) {
+        try {
+          await fetch('/api/save-profile', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              roll: user.roll_no,
+              currentSem: setupSelectedSem,
+              profile_data: academicProfile
+            })
+          });
+        } catch(e) { console.error('Failed to save profile to DB', e); }
+      }
+      
+      closeSetup(); buildSemNav(); renderLaneLabels(); generateNodes(); drawEdges(); syncState(); setTimeout(jumpToCurrentSem, 200);
+    }
+
+    /* GPA TRAJECTORY MODAL */
+    function openTrajectory() { closePanel(); renderBeautifulChart(); document.getElementById('traj-modal').classList.add('open'); }
+    function closeTrajectory() { document.getElementById('traj-modal').classList.remove('open'); }
+    function renderBeautifulChart() {
+      const svg = document.getElementById('gpa-chart-svg'); svg.innerHTML = '';
+      if (!academicProfile?.semesters?.length) {
+        document.getElementById('chart-container').innerHTML = `<div class="chart-empty"><div class="chart-empty-icon">📊</div><div>No academic data entered yet.</div><div class="chart-empty-action" onclick="closeTrajectory();setTimeout(openSetup,200)">+ Enter Your Grades</div></div>`;
+        document.getElementById('kpi-cgpa').textContent = '–'; document.getElementById('kpi-best').textContent = '–'; document.getElementById('kpi-proj').textContent = '–'; document.getElementById('kpi-fails').textContent = '–'; return;
+      }
+      document.getElementById('chart-container').innerHTML = '<svg id="gpa-chart-svg" style="width:100%;display:block;overflow:visible;height:280px"></svg>'; const svgEl = document.getElementById('gpa-chart-svg');
+      const data = [...academicProfile.semesters].sort((a, b) => a.sem - b.sem); const n = data.length; const total = academicProfile.currentSem - 1;
+      const cgpa = data.reduce((a, s) => a + s.gpa, 0) / n; const best = Math.max(...data.map(s => s.gpa)); const fails = data.reduce((a, s) => a + (s.failedIds?.length || 0), 0); const remaining = Math.max(0, 8 - n); const proj = n > 0 ? (cgpa * n + cgpa * remaining) / 8 : 0;
+      document.getElementById('kpi-cgpa').textContent = cgpa.toFixed(2); document.getElementById('kpi-best').textContent = best.toFixed(2); document.getElementById('kpi-proj').textContent = proj.toFixed(2); document.getElementById('kpi-fails').textContent = fails;
+
+      const W = 720, H = 260, padL = 50, padR = 30, padT = 30, padB = 40; const chartW = W - padL - padR; const chartH = H - padT - padB; svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      const barGrad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient'); barGrad.setAttribute('id', 'barGrad'); barGrad.setAttribute('x1', '0'); barGrad.setAttribute('y1', '0'); barGrad.setAttribute('x2', '0'); barGrad.setAttribute('y2', '1'); [['0%', '#34d399'], ['100%', '#10b981']].forEach(([o, c]) => { const s = document.createElementNS('http://www.w3.org/2000/svg', 'stop'); s.setAttribute('offset', o); s.setAttribute('stop-color', c); barGrad.appendChild(s); });
+      const barLowGrad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient'); barLowGrad.setAttribute('id', 'barLowGrad'); barLowGrad.setAttribute('x1', '0'); barLowGrad.setAttribute('y1', '0'); barLowGrad.setAttribute('x2', '0'); barLowGrad.setAttribute('y2', '1'); [['0%', '#f87171'], ['100%', '#ef4444']].forEach(([o, c]) => { const s = document.createElementNS('http://www.w3.org/2000/svg', 'stop'); s.setAttribute('offset', o); s.setAttribute('stop-color', c); barLowGrad.appendChild(s); });
+      const areaGrad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient'); areaGrad.setAttribute('id', 'areaGrad'); areaGrad.setAttribute('x1', '0'); areaGrad.setAttribute('y1', '0'); areaGrad.setAttribute('x2', '0'); areaGrad.setAttribute('y2', '1'); const ag1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop'); ag1.setAttribute('offset', '0%'); ag1.setAttribute('stop-color', '#fbbf24'); ag1.setAttribute('stop-opacity', '0.2'); const ag2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop'); ag2.setAttribute('offset', '100%'); ag2.setAttribute('stop-color', '#fbbf24'); ag2.setAttribute('stop-opacity', '0'); areaGrad.appendChild(ag1); areaGrad.appendChild(ag2);
+      const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter'); filter.setAttribute('id', 'barGlow'); const blur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur'); blur.setAttribute('stdDeviation', '4'); blur.setAttribute('result', 'blur'); const comp = document.createElementNS('http://www.w3.org/2000/svg', 'feMerge'); const n1 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode'); n1.setAttribute('in', 'blur'); const n2 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode'); n2.setAttribute('in', 'SourceGraphic'); comp.appendChild(n1); comp.appendChild(n2); filter.appendChild(blur); filter.appendChild(comp);
+      defs.appendChild(barGrad); defs.appendChild(barLowGrad); defs.appendChild(areaGrad); defs.appendChild(filter); svgEl.appendChild(defs);
+
+      const yTicks = [0, 1, 2, 2.5, 3, 3.5, 4.0];
+      yTicks.forEach(v => {
+        const y = padT + (1 - v / 4) * chartH; const line = document.createElementNS('http://www.w3.org/2000/svg', 'line'); line.setAttribute('x1', padL); line.setAttribute('x2', W - padR); line.setAttribute('y1', y); line.setAttribute('y2', y); line.setAttribute('stroke', v === 3.0 ? 'rgba(52, 211, 153, 0.3)' : v === 2.5 ? 'rgba(251, 191, 36, 0.3)' : 'rgba(255,255,255,0.05)'); line.setAttribute('stroke-width', v === 3.0 || v === 2.5 ? '1.5' : '1'); if (v === 3.0 || v === 2.5) line.setAttribute('stroke-dasharray', '6 6'); svgEl.appendChild(line);
+        const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text'); txt.setAttribute('x', padL - 10); txt.setAttribute('y', y + 4); txt.setAttribute('text-anchor', 'end'); txt.setAttribute('fill', 'var(--text-muted)'); txt.setAttribute('font-size', '11'); txt.setAttribute('font-family', 'Inter'); txt.setAttribute('font-weight', '600'); txt.textContent = v.toFixed(1); svgEl.appendChild(txt);
+      });
+
+      const maxSem = Math.max(8, ...data.map(d => d.sem)); const barW = 28; const spacing = chartW / maxSem;
+      let cgpaPath = '', cgpaArea = `M ${padL + spacing / 2},${padT + chartH}`; let cumTotal = 0;
+      data.forEach((d, i) => {
+        const x = padL + spacing * (d.sem - 0.5); const h = (d.gpa / 4) * chartH; const y = padT + chartH - h;
+        const bar = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); bar.setAttribute('x', x - barW / 2); bar.setAttribute('y', y); bar.setAttribute('width', barW); bar.setAttribute('height', h); bar.setAttribute('rx', '6'); bar.setAttribute('fill', d.gpa < 2.0 ? 'url(#barLowGrad)' : 'url(#barGrad)'); bar.setAttribute('filter', 'url(#barGlow)');
+        const gpaTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text'); gpaTxt.setAttribute('x', x); gpaTxt.setAttribute('y', y - 10); gpaTxt.setAttribute('text-anchor', 'middle'); gpaTxt.setAttribute('fill', 'var(--text-primary)'); gpaTxt.setAttribute('font-size', '12'); gpaTxt.setAttribute('font-family', 'Space Grotesk'); gpaTxt.setAttribute('font-weight', '700'); gpaTxt.textContent = d.gpa.toFixed(2);
+        const lblTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text'); lblTxt.setAttribute('x', x); lblTxt.setAttribute('y', padT + chartH + 20); lblTxt.setAttribute('text-anchor', 'middle'); lblTxt.setAttribute('fill', 'var(--text-sec)'); lblTxt.setAttribute('font-size', '12'); lblTxt.setAttribute('font-family', 'Inter'); lblTxt.setAttribute('font-weight', '500'); lblTxt.textContent = `S${d.sem}`;
+        svgEl.appendChild(bar); svgEl.appendChild(gpaTxt); svgEl.appendChild(lblTxt);
+        cumTotal += d.gpa; const currentCgpa = cumTotal / (i + 1); const cy = padT + (1 - currentCgpa / 4) * chartH;
+        cgpaPath += (i === 0 ? `M ${x},${cy}` : ` L ${x},${cy}`); cgpaArea += ` L ${x},${cy}`;
+        if (d.failedIds && d.failedIds.length > 0) { const failBadge = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); failBadge.setAttribute('cx', x); failBadge.setAttribute('cy', padT + chartH + 34); failBadge.setAttribute('r', '3'); failBadge.setAttribute('fill', 'var(--red)'); svgEl.appendChild(failBadge); }
+      });
+
+      if (data.length > 0) {
+        cgpaArea += ` L ${padL + spacing * (data[data.length - 1].sem - 0.5)},${padT + chartH} Z`;
+        const pathArea = document.createElementNS('http://www.w3.org/2000/svg', 'path'); pathArea.setAttribute('d', cgpaArea); pathArea.setAttribute('fill', 'url(#areaGrad)'); svgEl.insertBefore(pathArea, svgEl.lastChild);
+        const pathLine = document.createElementNS('http://www.w3.org/2000/svg', 'path'); pathLine.setAttribute('d', cgpaPath); pathLine.setAttribute('fill', 'none'); pathLine.setAttribute('stroke', 'var(--gold)'); pathLine.setAttribute('stroke-width', '3'); pathLine.setAttribute('filter', 'drop-shadow(0 2px 4px rgba(251,191,36,0.4))'); svgEl.insertBefore(pathLine, svgEl.lastChild);
+        data.forEach((d, i) => {
+          const x = padL + spacing * (d.sem - 0.5); const currentCgpa = data.slice(0, i + 1).reduce((a, s) => a + s.gpa, 0) / (i + 1); const cy = padT + (1 - currentCgpa / 4) * chartH;
+          const pt = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); pt.setAttribute('cx', x); pt.setAttribute('cy', cy); pt.setAttribute('r', '5'); pt.setAttribute('fill', 'var(--bg-surface)'); pt.setAttribute('stroke', 'var(--gold)'); pt.setAttribute('stroke-width', '2'); svgEl.appendChild(pt);
+        });
+      }
+    }
+
+    /* INIT */
+    window.onload = async function () {
+      await loadProfile(); syncState(); buildSemNav(); renderLaneLabels(); generateNodes(); drawEdges(); setTimeout(jumpToCurrentSem, 100);
+      // Auto-fade the welcome banner after 5 seconds
+      setTimeout(() => { const wb = document.getElementById('welcome-banner'); if (wb) wb.style.animation = 'bannerFade 1s ease forwards'; }, 5000);
+      let isDragging = false; let startX, startY, scrollLeft, scrollTop; const slider = document.getElementById('graph-vp');
+      slider.addEventListener('mousedown', (e) => { isDragging = true; slider.style.cursor = 'grabbing'; startX = e.pageX - slider.offsetLeft; startY = e.pageY - slider.offsetTop; scrollLeft = slider.scrollLeft; scrollTop = slider.scrollTop; });
+      slider.addEventListener('mouseleave', () => { isDragging = false; slider.style.cursor = 'auto'; });
+      slider.addEventListener('mouseup', () => { isDragging = false; slider.style.cursor = 'auto'; });
+      slider.addEventListener('mousemove', (e) => { 
+        if (!isDragging) {
+          // Free mouse parallax
+          const x = (window.innerWidth / 2 - e.pageX) / 40;
+          const y = (window.innerHeight / 2 - e.pageY) / 40;
+          document.querySelector('.background-ambient').style.transform = `scale(1.1) translate(${x}px, ${y}px)`;
+          return;
+        } 
+        e.preventDefault(); 
+        const x = e.pageX - slider.offsetLeft; 
+        const y = e.pageY - slider.offsetTop; 
+        slider.scrollLeft = scrollLeft - (x - startX) * 1.5; 
+        slider.scrollTop = scrollTop - (y - startY) * 1.5; 
+        
+        // Panning Parallax (Subtle & Symmetric)
+        const bgX = (slider.scrollLeft / slider.scrollWidth) * 20;
+        const bgY = (slider.scrollTop / slider.scrollHeight) * 20;
+        document.getElementById('nexus-bg-text').style.transform = `translate(calc(-50% + ${bgX}px), calc(-50% + ${bgY}px))`;
+      });
+      slider.addEventListener('mouseleave', () => { isDragging = false; slider.style.cursor = 'auto'; });
+    };
+  </script>
+</body>
+</html>
