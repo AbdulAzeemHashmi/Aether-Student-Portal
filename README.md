@@ -1,103 +1,185 @@
-# AETHER: Zenith Academic OS 🌌
+<div align="center">
 
-> A premium, glassmorphism-powered Learning OS for the modern scholar.
+```
+ █████╗ ███████╗████████╗██╗  ██╗███████╗██████╗
+██╔══██╗██╔════╝╚══██╔══╝██║  ██║██╔════╝██╔══██╗
+███████║█████╗     ██║   ███████║█████╗  ██████╔╝
+██╔══██║██╔══╝     ██║   ██╔══██║██╔══╝  ██╔══██╗
+██║  ██║███████╗   ██║   ██║  ██║███████╗██║  ██║
+╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+```
 
-![Platform](https://img.shields.io/badge/Platform-Flask%20%2B%20MongoDB-6366f1?style=for-the-badge&logo=flask&logoColor=white)
-![Frontend](https://img.shields.io/badge/Frontend-Vanilla%20HTML%2FCSS%2FJS-ec4899?style=for-the-badge&logo=html5&logoColor=white)
-![Database](https://img.shields.io/badge/Database-MongoDB%20Atlas-10b981?style=for-the-badge&logo=mongodb&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-a855f7?style=for-the-badge)
+### Zenith Academic OS
+
+*A mission control center for your entire degree, built for the modern scholar.*
+
+<br/>
+
+[![Flask](https://img.shields.io/badge/Flask_3.0-Backend-6366f1?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB_Atlas-Database-10b981?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/cloud/atlas)
+[![JavaScript](https://img.shields.io/badge/Vanilla_JS-Frontend-ec4899?style=for-the-badge&logo=javascript&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Python](https://img.shields.io/badge/Python_3.9+-Language-a855f7?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge)](LICENSE)
+
+<br/>
+
+[Features](#-feature-breakdown) · [Getting Started](#-getting-started) · [API Reference](#-api-reference) · [Design Philosophy](#-design-philosophy) · [Contributing](#-contributing)
+
+</div>
 
 ---
 
-## What is AETHER?
+## 🌌 What is AETHER?
 
-AETHER is a full-stack academic management platform built with a high-fidelity "Zenith Glass" design language. It gives university students a unified, visually immersive workspace to track their GPA trajectory, map course prerequisites, visualize their academic timeline, and manage their identity profile, all backed by a persistent cloud database.
+AETHER is a full-stack academic management platform built around a high-fidelity **"Zenith Glass"** design language. It consolidates everything a university student needs into one unified, visually immersive workspace, from tracking GPA trajectories to mapping course prerequisites and visualizing semester timelines.
 
-Think of it as a mission control center for your degree.
+Most student portals are utilitarian and forgettable. AETHER is built on the belief that the tools you use every day should feel exceptional.
+
+> **Think of it as a premium operating system for your academic life.** Each page is a dedicated module. Together they form a complete ecosystem.
 
 ---
 
-## Screenshots
+## 🚨 Security Notice (Read Before Pushing)
 
-| Login | Animus Hub | Nexus Map |
+The `app.py` file currently contains a **hardcoded MongoDB connection URI** with real credentials. Before pushing this repository to GitHub, you must remove it.
+
+**Step 1:** Create a `.env` file in the root directory:
+
+```env
+MONGO_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
+```
+
+**Step 2:** Install `python-dotenv`:
+
+```bash
+pip install python-dotenv
+```
+
+**Step 3:** Update the top of `app.py`:
+
+```python
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+MONGO_URI = os.getenv("MONGO_URI")
+```
+
+**Step 4:** Add `.env` to your `.gitignore`:
+
+```
+.env
+__pycache__/
+*.pyc
+```
+
+Your credentials are now safe. Never commit a raw connection string to a public repository.
+
+---
+
+## ✨ Feature Breakdown
+
+<table>
+<tr>
+<td width="50%">
+
+### 🏠 Animus Hub
+The central command dashboard. Displays at-a-glance stats including current GPA, credit hours completed, and academic health scores. Serves as the launch pad for all other modules via a sleek glassmorphism grid.
+
+</td>
+<td width="50%">
+
+### 🗺️ Nexus Map
+An interactive skill-tree graph that visualizes the prerequisite topology of your entire degree. Courses are nodes, prerequisites are directed edges. Unlock progression as you advance semester by semester.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 📜 Academic Chronicle
+A scroll-triggered, alternating 3D timeline across all 8 semesters. Completed semesters display solidified GPA and course data. Future semesters appear as "quantum possibilities," rendered with cinematic IntersectionObserver animations.
+
+</td>
+<td width="50%">
+
+### 🧠 Intelligence Report
+An AI-driven analysis panel that evaluates your GPA trend, academic health score, and flags gatekeeper courses that may affect your graduation trajectory. Turns raw data into actionable insight.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 👤 Neural Identity
+A persistent profile page for synchronizing your name, roll number, email, password, and profile photo across all devices. All changes cascade correctly through the database, including roll number updates.
+
+</td>
+<td width="50%">
+
+### 🔐 Auth System
+Secure registration and login backed by MongoDB. Enforces roll number format validation (`24I-2013` style), minimum password length, and duplicate-account prevention at the database index level.
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Purpose |
 |---|---|---|
-| Glassmorphic auth card with 3D parallax | Central dashboard with stat grid | Interactive prerequisite skill tree |
-
-| Chronicle | Intelligence Report | Neural Identity |
-|---|---|---|
-| Animated semester timeline | AI-driven GPA and health analysis | Profile sync with photo upload |
-
----
-
-## Feature Breakdown
-
-### Animus Hub
-The central command dashboard. Displays at-a-glance stats including current GPA, credit hours completed, health scores, and quick-launch tiles to all other modules.
-
-### Nexus Map
-An interactive skill-tree graph that visualizes the prerequisite topology of your entire degree. Courses are nodes; prerequisites are directed edges. Unlock progression as you advance.
-
-### Academic Chronicle
-A scroll-triggered, alternating timeline of all 8 semesters. Completed semesters display locked GPA and course data; future semesters appear as "quantum possibilities." Powered by IntersectionObserver for cinematic entrance animations.
-
-### Intelligence Report
-An AI-driven analysis panel that evaluates your GPA trend, academic health score, and flags gatekeeper courses that may affect your graduation trajectory.
-
-### Neural Identity
-A persistent profile page where students synchronize their name, roll number, email, password, and profile photo across all devices via MongoDB Atlas.
+| **Backend** | Python 3.9+, Flask 3.0, Flask-CORS | REST API, static file serving, routing |
+| **Database** | MongoDB Atlas, pymongo 4.7 | Cloud-hosted document storage |
+| **Frontend** | Vanilla HTML5, CSS3, JavaScript ES6+ | All UI, animations, and API calls |
+| **Fonts** | Outfit, Space Grotesk, Inter | Display, UI, and body typography |
+| **3D / FX** | CSS `preserve-3d`, `backdrop-filter` | Glassmorphism, parallax, card depth |
+| **Extras** | python-pptx | Report generation and export |
 
 ---
 
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Backend | Python 3, Flask 3.0, Flask-CORS |
-| Database | MongoDB Atlas (cloud), pymongo 4.7 |
-| Frontend | Vanilla HTML5, CSS3, JavaScript (ES6+) |
-| Fonts | Outfit, Space Grotesk, Inter (Google Fonts) |
-| Extras | python-pptx (report export), CSS backdrop-filter glassmorphism |
-
----
-
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
-- Python 3.9 or higher
-- pip
-- An active internet connection (for MongoDB Atlas and Google Fonts)
-- A free [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account (or use the provided URI)
 
-### 1. Clone the Repository
+Before you begin, make sure you have the following:
+
+- **Python 3.9+** ([download](https://www.python.org/downloads/))
+- **pip** (bundled with Python)
+- **Git** ([download](https://git-scm.com/))
+- An active internet connection (for MongoDB Atlas and Google Fonts)
+- A free [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account
+
+### Step 1: Clone the Repository
 
 ```bash
 git clone https://github.com/AbdulAzeemHashmi/aether-academic-os.git
 cd aether-academic-os
 ```
 
-### 2. Install Dependencies
+### Step 2: Set Up Environment Variables
+
+Create a `.env` file in the root of the project:
+
+```env
+MONGO_URI=your_mongodb_atlas_connection_string_here
+```
+
+### Step 3: Install Dependencies
 
 ```bash
 pip install -r requirements.txt
+pip install python-dotenv
 ```
 
-### 3. Configure the Database
-
-Open `app.py` and locate the `MONGO_URI` variable near the top. Replace it with your own MongoDB Atlas connection string if you want your own isolated database:
-
-```python
-MONGO_URI = "mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority"
-```
-
-The app auto-seeds course data and creates indexes on the first run. No manual database setup is required.
-
-### 4. Launch the Server
+### Step 4: Launch the Server
 
 ```bash
 python app.py
 ```
 
-You will see:
+On a successful start you will see:
 
 ```
 Checking Database Integrity...
@@ -105,94 +187,144 @@ Database Ready.
  * Running on http://0.0.0.0:3000
 ```
 
-### 5. Open the Platform
+The app auto-seeds all course data and creates database indexes on first run. No manual setup needed.
+
+### Step 5: Open the Platform
 
 | Device | URL |
 |---|---|
 | PC / Laptop | `http://localhost:3000` |
-| Mobile (same WiFi) | `http://<your-pc-local-ip>:3000` |
+| Mobile (same WiFi) | `http://<your-local-ip>:3000` |
 
-Create an account via **Join AETHER**, then sign in. Roll number format: `24I-2013`.
+Register a new account via **Join AETHER** and sign in. Roll number format: `24I-2013`.
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 aether-academic-os/
-├── app.py              # Flask backend, REST API, MongoDB logic
-├── requirements.txt    # Python dependencies
-├── login.html          # Authentication entry point
-├── signup.html         # New user registration
-├── hub.html            # Animus Hub dashboard
-├── nexus.html          # Nexus Map skill tree
-├── chronicle.html      # Academic Chronicle timeline
-├── analysis.html       # Intelligence Report
-├── profile.html        # Neural Identity profile editor
+│
+├── app.py                  # Flask server, REST API, MongoDB logic
+├── requirements.txt        # Python package dependencies
+├── .env                    # Secret credentials (never commit this)
+├── .gitignore              # Excludes .env, __pycache__, etc.
+│
+├── login.html              # Authentication entry point
+├── signup.html             # New user registration
+├── hub.html                # Animus Hub, the main dashboard
+├── nexus.html              # Nexus Map, prerequisite skill tree
+├── chronicle.html          # Academic Chronicle, semester timeline
+├── analysis.html           # Intelligence Report, AI-driven analysis
+├── profile.html            # Neural Identity, profile editor
+│
 └── README.md
 ```
 
 ---
 
-## API Reference
+## 📡 API Reference
 
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | `/api/login` | Authenticate a user by roll number and password |
-| POST | `/api/register` | Register a new student account |
-| POST | `/api/update-user` | Update profile fields including roll number cascade |
-| GET | `/api/get-profile/<roll>` | Retrieve stored profile data for a roll number |
-| POST | `/api/get-profile` | Save profile data blob for a roll number |
+All endpoints accept and return `application/json`. Every response includes a `success` boolean. On failure, a `message` field describes the error.
 
-All endpoints return JSON with a `success` boolean and a `message` on failure.
+| Method | Endpoint | Body / Params | Description |
+|---|---|---|---|
+| `POST` | `/api/login` | `{ roll, pass }` | Authenticate a user, returns full user object |
+| `POST` | `/api/register` | `{ name, roll, pass }` | Register a new student, seeds course progress |
+| `POST` | `/api/update-user` | `{ orig_roll, full_name, roll_number, password, email, photo }` | Update profile, cascades roll number change to progress collection |
+| `GET` | `/api/get-profile/:roll` | URL param: `roll` | Retrieve stored profile data for a student |
+| `POST` | `/api/get-profile` | `{ roll, profile_data }` | Save a profile data blob for a student |
 
----
+### Example: Login Request
 
-## Roll Number Format
-
-AETHER enforces the following format for roll numbers at registration:
-
-```
-Pattern:  \d{2}[A-Z]-\d{4}
-Example:  24I-2013
+```bash
+curl -X POST http://localhost:3000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"roll": "24I-2013", "pass": "mypassword"}'
 ```
 
----
-
-## Design Philosophy
-
-AETHER is built around the "Zenith Glass" design principle:
-
-- **Dark-first aesthetics** with a near-black `#030303` base
-- **Glassmorphism** via `backdrop-filter: blur()` and translucent card surfaces
-- **Ambient lighting** through large, blurred gradient blobs that react to mouse parallax
-- **3D depth** using CSS `transform-style: preserve-3d` and `perspective`
-- **Scroll choreography** powered by IntersectionObserver for cinematic page reveals
-- **Typographic hierarchy** with Outfit (display), Space Grotesk (UI), and Inter (body)
+```json
+{
+  "success": true,
+  "user": {
+    "roll_no": "24I-2013",
+    "full_name": "Abdul Azeem",
+    "email": "azeem@example.com"
+  }
+}
+```
 
 ---
 
-## Contributing
+## 🎨 Design Philosophy
 
-Contributions are welcome. To propose a change:
+AETHER is built around a single principle: **academic tools should not look academic.**
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature-name`
-3. Commit your changes: `git commit -m "feat: describe your change"`
-4. Push to your fork: `git push origin feature/your-feature-name`
-5. Open a Pull Request
+Every visual decision is intentional:
 
-Please keep the design language consistent with the existing Zenith Glass aesthetic.
+| Principle | Implementation |
+|---|---|
+| **Dark-first** | Near-black `#030303` base to eliminate eye strain |
+| **Glassmorphism** | `backdrop-filter: blur()` with translucent card surfaces |
+| **Ambient depth** | Large blurred gradient blobs that respond to mouse parallax |
+| **3D structure** | CSS `transform-style: preserve-3d` and `perspective` on cards |
+| **Scroll choreography** | IntersectionObserver-powered entrance animations throughout |
+| **Type hierarchy** | Outfit for display, Space Grotesk for UI, Inter for body copy |
+| **Color language** | Indigo `#6366f1` for primary actions, pink `#ec4899` for highlights |
 
 ---
 
-## License
+## 🗺️ Roadmap
 
-This project is licensed under the MIT License. See `LICENSE` for details.
+- [ ] Migrate credentials fully to `.env` with `python-dotenv`
+- [ ] Add JWT-based session management to replace `localStorage` auth
+- [ ] Build a course grade entry UI that feeds the Chronicle and Intelligence Report
+- [ ] Add GPA projection calculator with what-if scenario modeling
+- [ ] Export academic report as a styled PDF via `python-pptx` or `weasyprint`
+- [ ] Add dark/light mode toggle
+- [ ] Mobile PWA support
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome from anyone who respects the design language.
+
+```bash
+# 1. Fork the repository on GitHub
+
+# 2. Clone your fork
+git clone https://github.com/your-username/aether-academic-os.git
+
+# 3. Create a feature branch
+git checkout -b feature/your-feature-name
+
+# 4. Make your changes, then commit
+git commit -m "feat: describe what you added"
+
+# 5. Push and open a Pull Request
+git push origin feature/your-feature-name
+```
+
+**Guidelines:**
+- Keep all UI consistent with the Zenith Glass aesthetic (dark backgrounds, glassmorphism, indigo/pink palette)
+- Do not introduce external CSS frameworks; keep the frontend dependency-free
+- Backend changes must preserve the existing API response shape so the frontend does not break
+- All new features must be responsive down to 375px viewport width
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for full details.
 
 ---
 
 <div align="center">
-  <strong>Built with precision by Abdul Azeem Hashmi</strong><br/>
-  <em>Zenith Glass Design Principles | AETHER Protocol</em>
+  <br/>
+  <img src="https://img.shields.io/badge/Built%20by-Abdul%20Azeem%20Hashmi-6366f1?style=for-the-badge" alt="Built by Abdul Azeem Hashmi"/>
+  <br/><br/>
+  <sub>Crafted with precision under Zenith Glass Design Principles · AETHER Protocol</sub>
+  <br/><br/>
+  <strong>If this project helped you, consider giving it a star on GitHub.</strong>
 </div>
