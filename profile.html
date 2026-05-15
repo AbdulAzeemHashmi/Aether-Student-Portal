@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AETHER | Profile Identity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #6366f1;
+      --accent: #a855f7;
+      --bg: #030303;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-sec: #94a3b8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    /* BACKGROUND */
+    .bg-mesh {
+      position: fixed; inset: 0;
+      background: radial-gradient(circle at 50% 120%, rgba(99, 102, 241, 0.15), transparent 70%);
+      z-index: -1;
+    }
+    #bg-canvas { position: fixed; inset: 0; pointer-events: none; z-index: -1; opacity: 0.3; }
+
+    header {
+      padding: 40px; display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 100; backdrop-filter: blur(20px);
+    }
+    .logo { font-family: 'Outfit'; font-size: 24px; font-weight: 800; letter-spacing: -1px; text-decoration: none; color: #fff; display: flex; align-items: center; gap: 12px; }
+    .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 8px; }
+    .nav-back { color: var(--text-sec); text-decoration: none; font-size: 13px; font-weight: 600; transition: color 0.2s; }
+    .nav-back:hover { color: #fff; }
+
+    .container { 
+      max-width: 800px; margin: 0 auto; padding: 40px 20px; 
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+    }
+
+    .profile-head { text-align: center; margin-bottom: 40px; }
+    .profile-title { font-family: 'Outfit'; font-size: 42px; font-weight: 800; margin-bottom: 8px; }
+    .profile-sub { color: var(--text-sec); font-size: 14px; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* IDENTITY CARD */
+    .identity-card {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 40px;
+      padding: 60px; backdrop-filter: blur(40px);
+      width: 100%; position: relative; overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+      animation: slide-up-fade 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes slide-up-fade { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* PHOTO UPLOAD */
+    .photo-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; }
+    .photo-preview-wrap {
+      width: 140px; height: 140px; border-radius: 50%;
+      padding: 4px; background: linear-gradient(135deg, var(--primary), var(--accent));
+      position: relative; cursor: pointer; transition: transform 0.4s;
+    }
+    .photo-preview-wrap:hover { transform: scale(1.05) rotate(5deg); }
+    .photo-preview {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: #111; object-fit: cover; border: 4px solid var(--bg);
+      display: flex; align-items: center; justify-content: center; font-size: 40px;
+    }
+    .photo-hint {
+      margin-top: 12px; font-size: 10px; color: var(--text-sec);
+      text-transform: uppercase; letter-spacing: 2px;
+    }
+    #photo-input { display: none; }
+
+    /* FORM */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+    .input-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .input-wrap.full { grid-column: span 2; }
+    label { font-size: 10px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
+    input {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      padding: 16px 20px; border-radius: 16px; color: #fff; font-family: 'Space Grotesk';
+      font-size: 15px; transition: all 0.3s;
+    }
+    input:focus { outline: none; border-color: var(--primary); background: rgba(255,255,255,0.06); box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
+
+    .btn-save {
+      margin-top: 40px; width: 100%; padding: 20px;
+      background: var(--primary); color: #fff; border: none; border-radius: 16px;
+      font-family: 'Outfit'; font-size: 16px; font-weight: 700; cursor: pointer;
+      transition: all 0.4s; text-transform: uppercase; letter-spacing: 2px;
+      position: relative; overflow: hidden;
+    }
+    .btn-save:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4); }
+    .btn-save::after {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+      opacity: 0; transition: opacity 0.4s; pointer-events: none;
+    }
+    .btn-save:active::after { opacity: 1; }
+
+    .msg { margin-top: 20px; font-size: 13px; text-align: center; min-height: 20px; }
+    .msg-success { color: var(--sage); }
+    .msg-error { color: var(--red); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      header { padding: 20px 24px; }
+      .container { padding: 24px 16px; }
+      .identity-card { padding: 32px 20px; border-radius: 24px; }
+      .profile-title { font-size: 32px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .input-wrap.full { grid-column: span 1; }
+    }
+    @media (max-width: 480px) {
+      header { padding: 16px; }
+      .logo { font-size: 18px; }
+      .identity-card { padding: 24px 16px; border-radius: 18px; }
+      .profile-title { font-size: 26px; }
+      input { padding: 13px 16px; font-size: 14px; }
+      .btn-save { padding: 16px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+  <canvas id="bg-canvas"></canvas>
+
+  <header>
+    <a href="hub.html" class="logo">
+      <div class="logo-icon"></div>
+      <span>AETHER</span>
+    </a>
+    <a href="hub.html" class="nav-back">← Back to Animus</a>
+  </header>
+
+  <div class="container">
+    <div class="profile-head">
+      <h1 class="profile-title">Neural Identity</h1>
+      <p class="profile-sub">Synchronize your explorer credentials with Animus</p>
+    </div>
+
+    <div class="identity-card">
+      <div class="photo-section">
+        <div class="photo-preview-wrap" onclick="document.getElementById('photo-input').click()">
+          <img id="preview-img" class="photo-preview" style="display:none" />
+          <div id="preview-placeholder" class="photo-preview">👤</div>
+        </div>
+        <div class="photo-hint">Update Visual Signature</div>
+        <input type="file" id="photo-input" accept="image/*" onchange="handlePhoto(event)" />
+      </div>
+
+      <div class="form-grid">
+        <div class="input-wrap full">
+          <label>Full Explorer Name</label>
+          <input type="text" id="p-name" placeholder="Enter full name" />
+        </div>
+        <div class="input-wrap">
+          <label>Identity Roll (ID)</label>
+          <input type="text" id="p-roll" placeholder="XXA-XXXX" />
+        </div>
+        <div class="input-wrap">
+          <label>Neural Link (Email)</label>
+          <input type="email" id="p-email" placeholder="email@example.com" />
+        </div>
+        <div class="input-wrap full">
+          <label>Access Key (Password)</label>
+          <div style="position:relative">
+            <input type="password" id="p-pass" style="width:100%" placeholder="Enter new password" />
+            <button onclick="togglePass(event)" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--primary); cursor:pointer; font-size:12px; font-weight:700">SHOW</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-save" onclick="saveProfile()">Synchronize Changes</button>
+      <div id="status-msg" class="msg"></div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      if (!user) { location.href = 'login.html'; return; }
+
+      document.getElementById('p-name').value = user.full_name || '';
+      document.getElementById('p-roll').value = user.roll_number || '';
+      document.getElementById('p-email').value = user.email || '';
+      document.getElementById('p-pass').value = user.password || '';
+      
+      if (user.photo) {
+        showPhoto(user.photo);
+      }
+
+      initParticles();
+    });
+
+    function togglePass(e) {
+      const p = document.getElementById('p-pass');
+      const b = e.target;
+      if (p.type === 'password') {
+        p.type = 'text';
+        b.textContent = 'HIDE';
+      } else {
+        p.type = 'password';
+        b.textContent = 'SHOW';
+      }
+    }
+
+    let currentPhotoBase64 = null;
+
+    function handlePhoto(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        currentPhotoBase64 = event.target.result;
+        showPhoto(currentPhotoBase64);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function showPhoto(base64) {
+      const img = document.getElementById('preview-img');
+      const placeholder = document.getElementById('preview-placeholder');
+      img.src = base64;
+      img.style.display = 'block';
+      placeholder.style.display = 'none';
+      currentPhotoBase64 = base64;
+    }
+
+    async function saveProfile() {
+      const msg = document.getElementById('status-msg');
+      const name = document.getElementById('p-name').value;
+      const roll = document.getElementById('p-roll').value;
+      const email = document.getElementById('p-email').value;
+      const pass = document.getElementById('p-pass').value;
+
+      const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+      const origRoll = user.roll_number || user.roll_no;
+
+      if (!name || !roll || !email || !pass) {
+        msg.className = 'msg msg-error';
+        msg.textContent = 'All synchronization fields are required.';
+        return;
+      }
+
+      msg.className = 'msg';
+      msg.textContent = 'Synchronizing with Animus...';
+
+      const updatedUser = {
+        orig_roll: origRoll,
+        full_name: name,
+        roll_number: roll,
+        email: email,
+        password: pass,
+        photo: currentPhotoBase64
+      };
+
+      try {
+        const response = await fetch('/api/update-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedUser)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          localStorage.setItem('currentUser', JSON.stringify({ ...user, ...updatedUser }));
+          
+          msg.className = 'msg msg-success';
+          msg.textContent = 'Identity synchronized successfully.';
+          
+          setTimeout(() => { location.href = 'hub.html'; }, 1000);
+        } else {
+          throw new Error(result.message || 'Sync failed');
+        }
+      } catch (err) {
+        msg.className = 'msg msg-error';
+        msg.textContent = 'Neural link error: ' + err.message;
+      }
+    }
+
+    function initParticles() {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let w, h, particles = [];
+
+      const resize = () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; };
+      window.addEventListener('resize', resize); resize();
+
+      class P {
+        constructor() { this.reset(); }
+        reset() {
+          this.x = Math.random() * w; this.y = Math.random() * h;
+          this.vx = (Math.random() - 0.5) * 0.4; this.vy = (Math.random() - 0.5) * 0.4;
+          this.size = Math.random() * 2; this.alpha = Math.random();
+        }
+        draw() {
+          ctx.fillStyle = `rgba(99, 102, 241, ${this.alpha * 0.2})`;
+          ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+        }
+        update() {
+          this.x += this.vx; this.y += this.vy;
+          if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) this.reset();
+        }
+      }
+
+      for (let i = 0; i < 80; i++) particles.push(new P());
+
+      function loop() {
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(loop);
+      }
+      loop();
+    }
+  </script>
+</body>
+</html>
