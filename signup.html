@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHER Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050505;
+      --text: #ffffff;
+      --text-muted: #64748b;
+      --primary: #6366f1;
+      --accent: #ec4899;
+      --glass: rgba(10, 10, 10, 0.8);
+      --border: rgba(255, 255, 255, 0.05);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #050505 !important;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    /* Premium Ambient Background */
+    .ambient-container { 
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; 
+      background: #050505;
+    }
+    .blob {
+      position: absolute; border-radius: 50%; filter: blur(150px);
+      opacity: 0.15; animation: blob-float 22s infinite alternate;
+    }
+    .blob-1 { width: 55vw; height: 55vh; background: #4f46e5; top: -5%; right: -5%; }
+    .blob-2 { width: 45vw; height: 45vh; background: #ec4899; bottom: -10%; left: -5%; animation-delay: -7s; }
+    @keyframes blob-float { 
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-80px, 40px) scale(1.15); }
+    }
+
+    .bg-text {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-family: 'Outfit', sans-serif; font-size: 26vw; font-weight: 900;
+      color: rgba(255, 255, 255, 0.005); letter-spacing: -2vw;
+      pointer-events: none; z-index: 1; white-space: nowrap;
+      text-transform: uppercase; line-height: 1;
+    }
+
+    .container {
+      position: relative; z-index: 10; width: 100%; max-width: 1300px;
+      padding: 0 60px; display: flex; align-items: center; justify-content: space-between;
+      flex-direction: row-reverse; gap: 40px;
+    }
+
+    /* Content Styling */
+    .hero { max-width: 500px; }
+    .hero .tagline {
+      display: inline-block; padding: 6px 14px; background: rgba(99, 102, 241, 0.08);
+      color: var(--primary); border-radius: 100px; font-family: 'Outfit';
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 2px; margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-family: 'Outfit'; font-size: 72px; font-weight: 800;
+      line-height: 0.95; color: var(--text); letter-spacing: -3px; margin-bottom: 28px;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 20px; color: var(--text-muted); line-height: 1.6;
+      max-width: 440px; font-weight: 300;
+    }
+
+    /* Auth Card */
+    .auth-card-wrap { perspective: 1000px; }
+    .auth-card {
+      width: 440px; padding: 45px 50px;
+      background: var(--glass); backdrop-filter: blur(40px) saturate(1.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 40px;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
+      position: relative; overflow: hidden;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero { display: none; }
+      .container { justify-content: center; flex-direction: column; padding: 0 20px; }
+      .auth-card-wrap { width: 100%; max-width: 460px; }
+      .auth-card { width: 100%; padding: 36px 28px; border-radius: 28px; }
+    }
+    @media (max-width: 480px) {
+      body { padding: 16px; }
+      .auth-card { padding: 28px 20px; border-radius: 22px; }
+      .auth-header h2 { font-size: 26px; }
+      .input-field { padding: 13px 18px; font-size: 15px; }
+      .btn-submit { padding: 15px; font-size: 16px; }
+    }
+    .auth-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .auth-header { margin-bottom: 35px; }
+    .auth-header h2 { font-family: 'Outfit'; font-size: 32px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .auth-header p { font-size: 15px; color: var(--text-muted); }
+
+    .input-group { margin-bottom: 20px; }
+    .input-group label {
+      display: block; font-size: 11px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; padding-left: 4px;
+    }
+    .input-field {
+      width: 100%; padding: 15px 22px;
+      background: rgba(0, 0, 0, 0.02); border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 18px; color: var(--text); font-family: 'Inter'; font-size: 15px;
+      outline: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .input-field:focus {
+      background: rgba(255,255,255,0.05); border-color: var(--primary);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .btn-submit {
+      width: 100%; padding: 18px;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 18px;
+      font-family: 'Outfit'; font-size: 18px; font-weight: 600;
+      cursor: pointer; transition: all 0.3s; margin-top: 10px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+    }
+    .btn-submit:hover {
+      background: var(--accent); transform: translateY(-3px);
+      box-shadow: 0 20px 40px rgba(236, 72, 153, 0.4);
+    }
+
+    .auth-footer { text-align: center; margin-top: 30px; font-size: 15px; color: var(--text-muted); }
+    .auth-footer a { color: var(--primary); text-decoration: none; font-weight: 700; }
+
+    .toast {
+      padding: 14px; border-radius: 16px; text-align: center;
+      font-size: 13px; font-weight: 600; display: none;
+      margin-bottom: 24px;
+      animation: toast-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .toast.err { background: rgba(248, 113, 113, 0.15); border: 1px solid rgba(248, 113, 113, 0.3); color: #fca5a5; }
+    .toast.ok { background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.3); color: #6ee7b7; }
+    @keyframes toast-in { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* 3D Core */
+    .canvas-3d {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 600px; height: 600px; pointer-events: none; z-index: 5;
+    }
+    .shape-wrap {
+      width: 100%; height: 100%; transform-style: preserve-3d;
+      animation: shape-rotate 50s linear infinite;
+    }
+    .shape-face {
+      position: absolute; top: 50%; left: 50%; width: 300px; height: 300px;
+      margin: -150px; background: rgba(99, 102, 241, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .f1 { transform: rotateY(0deg) translateZ(150px); }
+    .f2 { transform: rotateY(90deg) translateZ(150px); }
+    .f3 { transform: rotateY(180deg) translateZ(150px); }
+    .f4 { transform: rotateY(270deg) translateZ(150px); }
+    .f5 { transform: rotateX(90deg) translateZ(150px); }
+    .f6 { transform: rotateX(-90deg) translateZ(150px); }
+    @keyframes shape-rotate { to { transform: rotateX(360deg) rotateY(360deg); } }
+
+    .glow-core {
+      position: absolute; top: 50%; left: 50%; width: 100px; height: 100px;
+      margin: -50px; background: radial-gradient(circle, #fff 0%, var(--accent) 100%);
+      border-radius: 50%; filter: blur(30px); opacity: 0.2;
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-container">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <div class="bg-text">NEXUS</div>
+
+  <div class="canvas-3d">
+    <div class="shape-wrap">
+      <div class="shape-face f1"></div><div class="shape-face f2"></div>
+      <div class="shape-face f3"></div><div class="shape-face f4"></div>
+      <div class="shape-face f5"></div><div class="shape-face f6"></div>
+    </div>
+    <div class="glow-core"></div>
+  </div>
+
+  <div class="container">
+    <div class="hero">
+      <div class="tagline">The AETHER Protocol</div>
+      <h1>Start Your<br><span>Evolution</span></h1>
+      <p>Join the next generation of academic architects. Your path to excellence begins here.</p>
+    </div>
+
+    <div class="auth-card-wrap">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h2>Create Account</h2>
+          <p>Begin your AETHER integration.</p>
+        </div>
+        <div class="toast" id="toast"></div>
+        
+        <div class="input-group">
+          <label>Full Name</label>
+          <input type="text" id="s-name" class="input-field" placeholder="John Doe">
+        </div>
+        
+        <div class="input-group">
+          <label>Roll Number (Format: 24I-1234)</label>
+          <input type="text" id="s-roll" class="input-field" placeholder="24I-2013">
+        </div>
+        
+        <div class="input-group">
+          <label>Password (Min 8 Characters)</label>
+          <input type="password" id="s-pass" class="input-field" placeholder="••••••••">
+        </div>
+
+        <button class="btn-submit" onclick="handleSignup()">
+          Initialize
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+
+        <div class="auth-footer">
+          Already a Member? <a href="login.html">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('mousemove', e => {
+      const x = (window.innerWidth / 2 - e.clientX) / 40;
+      const y = (window.innerHeight / 2 - e.clientY) / 40;
+      document.querySelector('.canvas-3d').style.transform = `translate(calc(-50% + ${x*1.5}px), calc(-50% + ${y*1.5}px))`;
+      document.querySelector('.bg-text').style.transform = `translate(calc(-50% + ${x*0.5}px), calc(-50% + ${y*0.5}px))`;
+      document.querySelector('.auth-card-wrap').style.transform = `rotateY(${x*0.2}deg) rotateX(${y*-0.2}deg)`;
+    });
+
+    async function handleSignup() {
+      const name = document.getElementById('s-name').value;
+      const roll = document.getElementById('s-roll').value;
+      const pass = document.getElementById('s-pass').value;
+      const btn = document.querySelector('.btn-submit');
+      
+      if(location.protocol === 'file:') {
+        alert("ERROR: You must run the server (python app.py) and open http://localhost:3000 in your browser, not the file itself.");
+        return;
+      }
+
+      if(!name || !roll || !pass) {
+        showMsg("Data entry incomplete.", true);
+        return;
+      }
+
+      // Roll Number Constraint (e.g., 24I-2013)
+      const rollRegex = /^\d{2}[A-Z]-\d{4}$/i;
+      if(!rollRegex.test(roll)) {
+        showMsg("Format Error: Use 24I-XXXX style.", true);
+        return;
+      }
+
+      // Password Constraint
+      if(pass.length < 8) {
+        showMsg("Security Error: Min 8 characters.", true);
+        return;
+      }
+
+      btn.style.opacity = '0.5';
+      btn.innerText = 'Initializing...';
+
+      try {
+        const res = await fetch('/api/register', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({name, roll, pass})
+        });
+        const data = await res.json();
+        if(data.success) {
+          showMsg("Integration successful! Redirecting...", false);
+          setTimeout(() => location.href = 'login.html', 1500);
+        } else {
+          showMsg(data.message, true);
+          btn.style.opacity = '1';
+          btn.innerText = 'Initialize';
+        }
+      } catch(e) {
+        showMsg("Server Uplink Failed. Is app.py running?", true);
+        btn.style.opacity = '1';
+        btn.innerText = 'Initialize';
+      }
+    }
+
+    function showMsg(m, isErr) {
+      const toast = document.getElementById('toast');
+      toast.textContent = m;
+      toast.className = 'toast ' + (isErr ? 'err' : 'ok');
+      toast.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
