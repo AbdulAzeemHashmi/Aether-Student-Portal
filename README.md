@@ -31,7 +31,7 @@
 
 ## 🌌 What is AETHER?
 
-AETHER is a full-stack academic management platform built around a high-fidelity **"Zenith Glass"** design language. It consolidates everything a university student needs into one unified, visually immersive workspace, from tracking GPA trajectories to mapping course prerequisites and visualizing semester timelines.
+AETHER is a full-stack academic management platform built around a high-fidelity **"Zenith Glass"** design language. It consolidates everything a university student needs into one unified, visually immersive workspace, from tracking GPA trajectories to mapping course prerequisites and visualizing semester timelines.     
 
 Most student portals are utilitarian and forgettable. AETHER is built on the belief that the tools you use every day should feel exceptional.   
 
